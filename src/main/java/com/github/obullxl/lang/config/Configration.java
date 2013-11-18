@@ -15,7 +15,6 @@ import java.util.Map;
  * @version $Id: Configration.java, V1.0.1 2013年11月15日 下午4:18:52 $
  */
 public class Configration {
-
     /** 系统唯一标识符 */
     public static final String  SYS_IDENTIFY  = "identify";
 

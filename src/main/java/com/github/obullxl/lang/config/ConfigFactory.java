@@ -35,7 +35,7 @@ public class ConfigFactory {
     /**
      * 取得Configration对象
      */
-    public static Configration getConfigration() {
+    public static Configration get() {
         if (config == null) {
             config = new Configration();
 
@@ -196,7 +196,7 @@ public class ConfigFactory {
         System.out.println("hostname :" + hostName);
         
         System.out.println();
-        getConfigration();
+        get();
     }
 
 }
