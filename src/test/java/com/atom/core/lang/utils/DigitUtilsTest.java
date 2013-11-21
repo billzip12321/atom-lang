@@ -4,6 +4,8 @@
  */
 package com.atom.core.lang.utils;
 
+import com.github.obullxl.lang.utils.DigitUtils;
+
 /**
  * ByteUtils测试
  * 

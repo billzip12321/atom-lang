@@ -9,8 +9,8 @@ import java.io.InputStream;
 import org.apache.commons.io.IOUtils;
 import org.junit.Test;
 
-import com.atom.core.lang.xml.XMLNode;
-import com.atom.core.lang.xml.XMLUtils;
+import com.github.obullxl.lang.xml.XMLNode;
+import com.github.obullxl.lang.xml.XMLUtils;
 
 /**
  * XMLUtils工具类测试

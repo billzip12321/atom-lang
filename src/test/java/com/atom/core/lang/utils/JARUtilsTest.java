@@ -7,6 +7,8 @@ package com.atom.core.lang.utils;
 import org.junit.Assert;
 import org.junit.Test;
 
+import com.github.obullxl.lang.utils.JARUtils;
+
 /**
  * JARUtils工具类测试
  * 
