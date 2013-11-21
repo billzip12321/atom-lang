@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root key="XMLUtilsRoot">
+	<values id="01">
+		<value id="0101">Hello</value>
+		<value id="0102"><![CDATA[文本<b>哈哈</b>内容]]></value>
+	</values>
+	<values id="02">
+		<value id="0201">Hello</value>
+		<value id="0202"><![CDATA[文本<b>哈哈</b>内容]]></value>
+	</values>
+</root>

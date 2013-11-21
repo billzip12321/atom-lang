@@ -21,7 +21,7 @@
 	<developers>
 		<developer>
 			<id>obullxl</id>
-			<name>oldbull xulin</name>
+			<name>老牛啊</name>
 			<email>obullxl@gmail.com</email>
 		</developer>
 	</developers>
@@ -35,7 +35,10 @@
 			<artifactId>logback-classic</artifactId>
 			<version>1.0.13</version>
 		</dependency>
-
+		
+		<!-- ======================================== -->
+		<!-- Servlet相关依赖 -->
+		<!-- ======================================== -->
 		<dependency>
 			<groupId>javax.servlet</groupId>
 			<artifactId>jsp-api</artifactId>
@@ -72,13 +75,6 @@
 			<groupId>org.apache.velocity</groupId>
 			<artifactId>velocity</artifactId>
 			<version>1.7</version>
-		</dependency>
-
-		<dependency>
-			<groupId>log4j</groupId>
-			<artifactId>log4j</artifactId>
-			<version>1.2.16</version>
-			<scope>provided</scope>
 		</dependency>
 		<dependency>
 			<groupId>commons-lang</groupId>
