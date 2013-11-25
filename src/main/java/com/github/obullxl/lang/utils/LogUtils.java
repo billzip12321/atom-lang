@@ -4,8 +4,12 @@
  */
 package com.github.obullxl.lang.utils;
 
+import java.util.UUID;
+
+import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.slf4j.MDC;
 
 /**
  * 默认日志工具类
@@ -22,6 +26,53 @@ public class LogUtils {
      */
     public static final Logger get() {
         return logger;
+    }
+
+    // ~~~~~~~~~~ 线程日志ID ~~~~~~~~~~~~ //
+
+    /** 日志ID */
+    public static final String LOG_ID_KEY = "LogID";
+
+    /**
+     * 获取线程LogID
+     */
+    public static final String newLogID() {
+        return StringUtils.remove(UUID.randomUUID().toString(), "-");
+    }
+
+    /**
+     * 更新线程LogID
+     */
+    public static final void updateLogID() {
+        updateLogID(newLogID());
+    }
+
+    /**
+     * 更新线程LogID
+     */
+    public static final void updateLogID(String value) {
+        MDC.put(LOG_ID_KEY, value);
+    }
+
+    /**
+     * 获取线程LogID
+     */
+    public static final String findLogID() {
+        return MDC.get(LOG_ID_KEY);
+    }
+
+    /**
+     * 删除线程LogID
+     */
+    public static final void removeLogID() {
+        removeLogID(LOG_ID_KEY);
+    }
+
+    /**
+     * 删除线程LogID
+     */
+    public static final void removeLogID(String logKey) {
+        MDC.remove(logKey);
     }
 
     // ~~~~~~~~~~ 公用日志类 ~~~~~~~~~~~~ //

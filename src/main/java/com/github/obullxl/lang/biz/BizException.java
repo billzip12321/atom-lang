@@ -2,7 +2,7 @@
  * Author: obullxl@gmail.com
  * Copyright (c) 2004-2013 All Rights Reserved.
  */
-package com.github.obullxl.lang;
+package com.github.obullxl.lang.biz;
 
 import com.github.obullxl.lang.enums.EnumBase;
 
