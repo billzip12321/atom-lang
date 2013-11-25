@@ -4,6 +4,7 @@
  */
 package com.github.obullxl.lang.xhelper;
 
+import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
@@ -36,6 +37,13 @@ public class XHelperUtils {
      */
     public static void regist(String name, XHelper helper) {
         helpers.put(name, helper);
+    }
+
+    /**
+     * 获取所有XHelper
+     */
+    public static Map<String, XHelper> findXHelpers() {
+        return helpers;
     }
 
 }
