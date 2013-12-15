@@ -7,5 +7,7 @@
 	<!-- 应用名称 -->
 	<!-- ================================ -->
 	<entry key="app_name">atom-ebank-TEST</entry>
+	
+	<entry key="show_ads">false</entry>
 
 </properties>

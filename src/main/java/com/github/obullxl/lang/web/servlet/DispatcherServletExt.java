@@ -21,12 +21,16 @@ import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationContext;
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.servlet.DispatcherServlet;
+import org.springframework.web.servlet.ModelAndView;
 
 import com.github.obullxl.lang.Profiler;
 import com.github.obullxl.lang.ToString;
 import com.github.obullxl.lang.config.ConfigFactory;
+import com.github.obullxl.lang.spring.web.WebViewThemeHolder;
 import com.github.obullxl.lang.utils.DateUtils;
 import com.github.obullxl.lang.utils.LogUtils;
+import com.github.obullxl.lang.utils.MD5Utils;
+import com.github.obullxl.lang.utils.TextUtils;
 import com.github.obullxl.lang.web.WebContext;
 import com.github.obullxl.lang.xhelper.XHelper;
 import com.github.obullxl.lang.xhelper.XHelperUtils;
@@ -59,10 +63,21 @@ public class DispatcherServletExt extends DispatcherServlet {
         String value = ConfigFactory.get().getPropertyValue("perfThreshold");
         this.perfThreshold = NumberUtils.toLong(value, this.perfThreshold);
 
+        // 上下文
+        config.getServletContext().setAttribute("ctx", config.getServletContext().getContextPath());
+
         // 设置工具类
         config.getServletContext().setAttribute(IOUtils.class.getSimpleName(), new IOUtils());
+        config.getServletContext().setAttribute(MD5Utils.class.getSimpleName(), new MD5Utils());
         config.getServletContext().setAttribute(DateUtils.class.getSimpleName(), new DateUtils());
+        config.getServletContext().setAttribute(TextUtils.class.getSimpleName(), new TextUtils());
         config.getServletContext().setAttribute(StringUtils.class.getSimpleName(), new StringUtils());
+
+        // 系统参数
+        Map<String, String> cfgs = ConfigFactory.get().getConfig();
+        for (Map.Entry<String, String> cfg : cfgs.entrySet()) {
+            config.getServletContext().setAttribute(cfg.getKey(), cfg.getValue());
+        }
     }
 
     /** 
@@ -89,7 +104,7 @@ public class DispatcherServletExt extends DispatcherServlet {
         LogUtils.updateLogID();
 
         // 计时
-        Profiler.start("Web请求，URL:" + this.getQueryURL(request));
+        Profiler.start("Web请求[" + request.getMethod() + "], URL[" + this.getQueryURL(request) + "].");
         // 打印请求信息（DEBUG）
         this.dumpRequest(request);
         try {
@@ -108,6 +123,19 @@ public class DispatcherServletExt extends DispatcherServlet {
 
             LogUtils.removeLogID();
         }
+    }
+
+    /** 
+     * @see org.springframework.web.servlet.DispatcherServlet#render(org.springframework.web.servlet.ModelAndView, javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
+     */
+    protected void render(ModelAndView mv, HttpServletRequest request, HttpServletResponse response) throws Exception {
+        // 主题
+        mv.getModelMap().put("theme", WebViewThemeHolder.get());
+
+        // Web数据值
+        mv.getModelMap().putAll(WebContext.get().getData());
+
+        super.render(mv, request, response);
     }
 
     /** 
@@ -136,7 +164,7 @@ public class DispatcherServletExt extends DispatcherServlet {
         String uri = request.getRequestURI();
         String query = request.getQueryString();
 
-        if (StringUtils.isBlank(query)) {
+        if (StringUtils.isNotBlank(query)) {
             uri += ("?" + query);
         }
 

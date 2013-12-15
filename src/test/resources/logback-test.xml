@@ -6,15 +6,29 @@
 
 	<appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
 		<encoder>
-			<pattern>%contextName %date %-5level [%X{LogID}][%thread] %logger [%file:%line] - %msg%n</pattern>
+			<pattern>%date %-5level [%X{LogID}] - %msg%n</pattern>
+		</encoder>
+	</appender>
+	
+	<appender name="JeeSite" class="ch.qos.logback.core.rolling.RollingFileAppender">
+		<file>${logPath}/jeesite.log</file>
+		<append>true</append>
+		<rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+			<fileNamePattern>jeesite.log.%d{yyyyMMdd}</fileNamePattern>
+			<maxHistory>30</maxHistory>
+		</rollingPolicy>
+		<encoder>
+			<pattern>%date %-5level [%X{LogID}] - %msg%n</pattern>
 		</encoder>
 	</appender>
 
-	<logger name="LOGGER" level="debug" additivity="false">
+	<logger name="LOGGER" level="INFO" additivity="false">
 		<appender-ref ref="STDOUT" />
+		<appender-ref ref="JeeSite" />
 	</logger>
 
-	<root level="debug">
+	<root level="INFO">
 		<appender-ref ref="STDOUT" />
+		<appender-ref ref="JeeSite" />
 	</root>
 </configuration>

@@ -4,12 +4,16 @@
  */
 package com.github.obullxl.lang.web;
 
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import org.apache.commons.lang.BooleanUtils;
 import org.springframework.util.Assert;
 
 /**
@@ -19,16 +23,23 @@ import org.springframework.util.Assert;
  * @version $Id: WebContext.java, 2012-1-6 上午09:49:06 Exp $
  */
 public final class WebContext {
-    private static final ThreadLocal<WebContext> _holder = new ThreadLocal<WebContext>();
+    /** JSON请求标志 */
+    public static final String                   JSON_FLAG_KEY = "json_flag";
+
+    /** Web请求容器 */
+    private static final ThreadLocal<WebContext> _holder       = new ThreadLocal<WebContext>();
 
     /** 容器配置 */
     private static ServletConfig                 config;
 
     /** Web请求对象 */
-    private HttpServletRequest                   request;
+    private final HttpServletRequest             request;
 
     /** Web返回对象 */
-    private HttpServletResponse                  response;
+    private final HttpServletResponse            response;
+
+    /** Web请求数据值 */
+    private final Map<String, Object>            data;
 
     /**
      * 初始化
@@ -44,8 +55,34 @@ public final class WebContext {
         Assert.notNull(request, "请求对象[HttpServletRequest]为NULL！");
         Assert.notNull(response, "返回对象[HttpServletResponse]为NULL！");
 
+        this.data = new ConcurrentHashMap<String, Object>();
         this.request = request;
         this.response = response;
+    }
+
+    /**
+     * 获取Web请求数据值
+     */
+    public Map<String, Object> getData() {
+        return this.data;
+    }
+
+    /**
+     * 设置JSON请求标志
+     */
+    public void setRequestJSON() {
+        this.setRequestJSON(true);
+    }
+
+    public void setRequestJSON(boolean flag) {
+        this.getData().put(JSON_FLAG_KEY, flag);
+    }
+
+    /**
+     * 判断JSON请求标志
+     */
+    public boolean isRequestJSON() {
+        return BooleanUtils.toBoolean(String.valueOf(this.getData().get(JSON_FLAG_KEY)));
     }
 
     /**

@@ -5,6 +5,10 @@
 package com.github.obullxl.lang.biz;
 
 import java.io.Serializable;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+
+import com.github.obullxl.lang.ToString;
 
 /**
  * 请求返回结果
@@ -12,20 +16,26 @@ import java.io.Serializable;
  * @author obullxl@gmail.com
  * @version $Id: BaseResponse.java, V1.0.1 2013-7-1 下午12:58:29 $
  */
-public class BizResponse implements Serializable {
-    private static final long serialVersionUID = 8526248715699921117L;
+public class BizResponse extends ToString implements Serializable {
+    private static final long   serialVersionUID = 8526248715699921117L;
+
+    /** 业务数据KEY常量 */
+    public static final String  BIZ_ID_KEY       = "biz_id";
 
     /** 业务流水 */
-    private String            bizLog;
+    private String              bizLog;
 
     /** 成功标识 */
-    private boolean           success;
+    private boolean             success;
 
     /** 返回代码 */
-    private String            respCode;
+    private String              respCode;
 
     /** 返回文本 */
-    private String            respDesp;
+    private String              respDesp;
+
+    /** 业务数据 */
+    private Map<String, String> bizData          = new ConcurrentHashMap<String, String>();
 
     /**
      * CTOR
@@ -63,6 +73,18 @@ public class BizResponse implements Serializable {
 
     public void setRespDesp(String respDesp) {
         this.respDesp = respDesp;
+    }
+
+    public Map<String, String> getBizData() {
+        if (this.bizData == null) {
+            this.bizData = new ConcurrentHashMap<String, String>();
+        }
+
+        return bizData;
+    }
+
+    public void setBizData(Map<String, String> bizData) {
+        this.bizData = bizData;
     }
 
 }

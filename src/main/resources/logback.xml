@@ -4,7 +4,7 @@
 	<property name="logPath" value="logs" />
 
 	<appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
-		<file>${logPath}/atom-mobile-server.log</file>
+		<file>${logPath}/jeesite.log</file>
 		<append>true</append>
 		<rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
 			<fileNamePattern>atom-mobile-server.log.%d{yyyyMMdd}</fileNamePattern>

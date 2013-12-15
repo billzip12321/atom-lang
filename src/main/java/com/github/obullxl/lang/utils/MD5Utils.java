@@ -17,8 +17,15 @@ public final class MD5Utils {
     /**
      * 加密
      */
-    public static final String password(String source) {
+    public static final String digest(String source) {
         return DigestUtils.md5Hex(source);
+    }
+
+    /**
+     * 加密
+     */
+    public static final String digest(String source, String salt) {
+        return digest(salt + source + salt);
     }
 
     public static final void main(String[] args) {

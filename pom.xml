@@ -58,14 +58,30 @@
 		<!-- ======================================== -->
 		<dependency>
 			<groupId>org.springframework</groupId>
-			<artifactId>spring-beans</artifactId>
-			<version>3.2.4.RELEASE</version>
+			<artifactId>spring-context-support</artifactId>
+			<version>3.2.5.RELEASE</version>
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-webmvc</artifactId>
-			<version>3.2.4.RELEASE</version>
+			<version>3.2.5.RELEASE</version>
+			<scope>provided</scope>
+		</dependency>
+
+		<!-- ======================================== -->
+		<!-- JSON依赖 -->
+		<!-- ======================================== -->
+		<dependency>
+			<groupId>com.alibaba</groupId>
+			<artifactId>fastjson</artifactId>
+			<version>1.1.31</version>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.codehaus.jackson</groupId>
+			<artifactId>jackson-mapper-asl</artifactId>
+			<version>1.9.9</version>
 			<scope>provided</scope>
 		</dependency>
 
@@ -126,6 +142,26 @@
 		</dependency>
 
 		<!-- ======================================== -->
+		<!-- Jsoup依赖 -->
+		<!-- ======================================== -->
+		<dependency>
+			<groupId>org.jsoup</groupId>
+			<artifactId>jsoup</artifactId>
+			<version>1.7.3</version>
+			<scope>provided</scope>
+		</dependency>
+
+		<!-- ======================================== -->
+		<!-- Groovy依赖 -->
+		<!-- ======================================== -->
+		<dependency>
+			<groupId>org.codehaus.groovy</groupId>
+			<artifactId>groovy-all</artifactId>
+			<version>2.2.1</version>
+			<scope>provided</scope>
+		</dependency>
+
+		<!-- ======================================== -->
 		<!-- JUnit测试依赖 -->
 		<!-- ======================================== -->
 		<dependency>
@@ -135,6 +171,21 @@
 			<scope>test</scope>
 		</dependency>
 	</dependencies>
+
+	<repositories>
+		<repository>
+			<id>maven.org</id>
+			<url>http://central.maven.org/maven2</url>
+		</repository>
+		<repository>
+			<id>alibabatech.com</id>
+			<url>http://code.alibabatech.com/mvn/releases</url>
+		</repository>
+		<repository>
+			<id>obullxl.github</id>
+			<url>http://obullxl.github.io/mvnrepo</url>
+		</repository>
+	</repositories>
 
 	<build>
 		<plugins>
