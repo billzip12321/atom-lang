@@ -24,10 +24,13 @@ import org.springframework.util.Assert;
  */
 public final class WebContext {
     /** JSON请求标志 */
-    public static final String                   JSON_FLAG_KEY = "json_flag";
+    public static final String                   JSON_FLAG_KEY     = "json_flag";
+
+    /** Redirect标志 */
+    public static final String                   REDIRECT_FLAG_KEY = "redirect_flag";
 
     /** Web请求容器 */
-    private static final ThreadLocal<WebContext> _holder       = new ThreadLocal<WebContext>();
+    private static final ThreadLocal<WebContext> _holder           = new ThreadLocal<WebContext>();
 
     /** 容器配置 */
     private static ServletConfig                 config;
@@ -74,8 +77,25 @@ public final class WebContext {
         this.setRequestJSON(true);
     }
 
+    /**
+     * 设置JSON请求标志
+     */
     public void setRequestJSON(boolean flag) {
         this.getData().put(JSON_FLAG_KEY, flag);
+    }
+
+    /**
+     * 设置Redirect标志
+     */
+    public void setRequestRedirect() {
+        this.setRequestRedirect(true);
+    }
+
+    /**
+     * 设置Redirect标志
+     */
+    public void setRequestRedirect(boolean flag) {
+        this.getData().put(REDIRECT_FLAG_KEY, flag);
     }
 
     /**
@@ -83,6 +103,13 @@ public final class WebContext {
      */
     public boolean isRequestJSON() {
         return BooleanUtils.toBoolean(String.valueOf(this.getData().get(JSON_FLAG_KEY)));
+    }
+
+    /**
+     * 判断Redirect标志
+     */
+    public boolean isRequestRedirect() {
+        return BooleanUtils.toBoolean(String.valueOf(this.getData().get(REDIRECT_FLAG_KEY)));
     }
 
     /**

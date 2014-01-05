@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd" default-autowire="byName">
+
+	<bean class="com.github.obullxl.lang.spring.EnvCfgFactoryBeanTestBean">
+		<property name="myProp">
+			<value>Hello 你好！</value>
+		</property>
+		<property name="myProp1">
+			<bean class="com.github.obullxl.lang.spring.EnvCfgFactoryBean">
+				<property name="key" value="app_name" />
+			</bean>
+		</property>
+		<property name="myProp2">
+			<bean class="com.github.obullxl.lang.spring.EnvCfgFactoryBean">
+				<property name="key" value="ANTX_HOME" />
+			</bean>
+		</property>
+		<property name="myProp3">
+			<bean class="com.github.obullxl.lang.spring.EnvCfgFactoryBean">
+				<property name="key" value="os.name" />
+			</bean>
+		</property>
+		<property name="myProp4">
+			<bean class="com.github.obullxl.lang.spring.EnvCfgFactoryBean">
+				<property name="key" value="$ANTX_HOME" />
+			</bean>
+		</property>
+	</bean>
+
+</beans>

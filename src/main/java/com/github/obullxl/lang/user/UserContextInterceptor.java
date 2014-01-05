@@ -46,7 +46,7 @@ public class UserContextInterceptor extends HandlerInterceptorAdapter implements
     private Set<String>                      uriPrefixs;
 
     /** 跳转页面 */
-    private String                           gotoUrl;
+    private String                           gotoUrl = "/login.html";
 
     /** 
      * 权限配置
@@ -165,7 +165,7 @@ public class UserContextInterceptor extends HandlerInterceptorAdapter implements
         }
 
         if (logger.isInfoEnabled()) {
-            logger.info("拦截后台请求-" + url);
+            logger.info("拦截后台请求{}-{}", StringUtils.upperCase(request.getMethod()), url);
         }
 
         if (!this.ready) {
@@ -181,20 +181,12 @@ public class UserContextInterceptor extends HandlerInterceptorAdapter implements
 
         // 登录状态检查
         if (!UserContextUtils.isLogin()) {
-            // 设置跳转页面
-            String gotoUrl = this.gotoUrl;
-            if (StringUtils.equalsIgnoreCase(request.getMethod(), "GET")) {
-                if (StringUtils.isBlank(gotoUrl)) {
-                    gotoUrl = url;
-                }
-            }
-
             // 保持会话
-            UserContextUtils.setGotoURL(UserContextHolder.get(), gotoUrl);
+            UserContextUtils.setGotoURL(UserContextHolder.get(), url);
             UserContextUtils.setSessionContext(session, ctx);
 
             // 页面跳转
-            ServletUtils.redirectResponse(gotoUrl, request, response);
+            ServletUtils.redirectResponse(this.gotoUrl, request, response);
 
             // 禁止执行
             return false;

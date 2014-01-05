@@ -12,7 +12,10 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang.BooleanUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.SystemUtils;
 import org.apache.commons.lang.math.NumberUtils;
@@ -67,11 +70,16 @@ public class DispatcherServletExt extends DispatcherServlet {
         config.getServletContext().setAttribute("ctx", config.getServletContext().getContextPath());
 
         // 设置工具类
-        config.getServletContext().setAttribute(IOUtils.class.getSimpleName(), new IOUtils());
         config.getServletContext().setAttribute(MD5Utils.class.getSimpleName(), new MD5Utils());
         config.getServletContext().setAttribute(DateUtils.class.getSimpleName(), new DateUtils());
         config.getServletContext().setAttribute(TextUtils.class.getSimpleName(), new TextUtils());
+        
+        config.getServletContext().setAttribute(IOUtils.class.getSimpleName(), new IOUtils());
+        config.getServletContext().setAttribute(NumberUtils.class.getSimpleName(), new NumberUtils());
         config.getServletContext().setAttribute(StringUtils.class.getSimpleName(), new StringUtils());
+        config.getServletContext().setAttribute(FileUtils.class.getSimpleName(), new FileUtils());
+        config.getServletContext().setAttribute(FilenameUtils.class.getSimpleName(), new FilenameUtils());
+        config.getServletContext().setAttribute(BooleanUtils.class.getSimpleName(), new BooleanUtils());
 
         // 系统参数
         Map<String, String> cfgs = ConfigFactory.get().getConfig();
@@ -129,11 +137,16 @@ public class DispatcherServletExt extends DispatcherServlet {
      * @see org.springframework.web.servlet.DispatcherServlet#render(org.springframework.web.servlet.ModelAndView, javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
      */
     protected void render(ModelAndView mv, HttpServletRequest request, HttpServletResponse response) throws Exception {
-        // 主题
-        mv.getModelMap().put("theme", WebViewThemeHolder.get());
-
         // Web数据值
-        mv.getModelMap().putAll(WebContext.get().getData());
+        if (WebContext.get().isRequestRedirect()) {
+            mv.getModelMap().clear();
+        } else {
+            // 参数
+            mv.getModelMap().putAll(WebContext.get().getData());
+
+            // 主题
+            mv.getModelMap().put(WebViewThemeHolder.THEME_KEY, WebViewThemeHolder.get());
+        }
 
         super.render(mv, request, response);
     }

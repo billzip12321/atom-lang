@@ -6,7 +6,7 @@
 	<!-- ================================ -->
 	<!-- 应用名称 -->
 	<!-- ================================ -->
-	<entry key="app_name">atom-ebank-TEST</entry>
+	<entry key="app_name">$ANTX_HOME</entry>
 	
 	<entry key="show_ads">false</entry>
 

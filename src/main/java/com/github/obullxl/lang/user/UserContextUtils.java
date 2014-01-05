@@ -10,6 +10,7 @@ import java.util.Set;
 import javax.servlet.http.HttpSession;
 
 import org.apache.commons.lang.BooleanUtils;
+import org.apache.commons.lang.StringUtils;
 
 /**
  * 用户上下文工具类
@@ -37,7 +38,12 @@ public class UserContextUtils implements UserConstant {
      * 获取额外数据String
      */
     public static final String findStringData(String key) {
-        return String.valueOf(findExtData().get(key));
+        Object object = findExtData().get(key);
+        if (object == null) {
+            return StringUtils.EMPTY;
+        }
+
+        return String.valueOf(object);
     }
 
     /**
@@ -76,10 +82,26 @@ public class UserContextUtils implements UserConstant {
     }
 
     /**
-     * 获取登录调整URL
+     * 获取登录URL跳转
      */
     public static final String findGotoURL() {
         return findStringData(URL_GOTO_KEY);
+    }
+
+    /**
+     * 获取登录URL跳转
+     */
+    public static final String findGotoURL(UserContext ctx) {
+        if (ctx == null) {
+            return StringUtils.EMPTY;
+        }
+
+        Object object = ctx.getUserExtData().get(URL_GOTO_KEY);
+        if (object == null) {
+            return StringUtils.EMPTY;
+        }
+
+        return String.valueOf(object);
     }
 
     /**

@@ -13,10 +13,14 @@ import org.apache.commons.lang.StringUtils;
  * @version $Id: WebViewThemeHolder.java, V1.0.1 2013年12月4日 下午7:34:03 $
  */
 public class WebViewThemeHolder {
-    public static String                     DEFAULT = "default";
+    /** 默认主题 */
+    public static String                     DEFAULT   = "default";
+
+    /** 主题参数KEY */
+    public static final String               THEME_KEY = "_theme";
 
     /** 主题信息 */
-    private static final ThreadLocal<String> holder  = new ThreadLocal<String>();
+    private static final ThreadLocal<String> holder    = new ThreadLocal<String>();
 
     /**
      * 设置主题
