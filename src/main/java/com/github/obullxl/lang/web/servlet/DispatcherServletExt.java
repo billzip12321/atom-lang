@@ -29,6 +29,7 @@ import org.springframework.web.servlet.ModelAndView;
 import com.github.obullxl.lang.Profiler;
 import com.github.obullxl.lang.ToString;
 import com.github.obullxl.lang.config.ConfigFactory;
+import com.github.obullxl.lang.spring.ServletReadyEvent;
 import com.github.obullxl.lang.spring.web.WebViewThemeHolder;
 import com.github.obullxl.lang.utils.DateUtils;
 import com.github.obullxl.lang.utils.LogUtils;
@@ -68,12 +69,17 @@ public class DispatcherServletExt extends DispatcherServlet {
 
         // 上下文
         config.getServletContext().setAttribute("ctx", config.getServletContext().getContextPath());
+        
+        String rootPath = WebContext.getServletContext().getRealPath("/");
+        rootPath = FilenameUtils.normalizeNoEndSeparator(rootPath, true);
+        config.getServletContext().setAttribute("ctxRootPath", rootPath);
+        logger.warn("[系统]-根目录-{}", rootPath);
 
         // 设置工具类
         config.getServletContext().setAttribute(MD5Utils.class.getSimpleName(), new MD5Utils());
         config.getServletContext().setAttribute(DateUtils.class.getSimpleName(), new DateUtils());
         config.getServletContext().setAttribute(TextUtils.class.getSimpleName(), new TextUtils());
-        
+
         config.getServletContext().setAttribute(IOUtils.class.getSimpleName(), new IOUtils());
         config.getServletContext().setAttribute(NumberUtils.class.getSimpleName(), new NumberUtils());
         config.getServletContext().setAttribute(StringUtils.class.getSimpleName(), new StringUtils());
@@ -86,6 +92,9 @@ public class DispatcherServletExt extends DispatcherServlet {
         for (Map.Entry<String, String> cfg : cfgs.entrySet()) {
             config.getServletContext().setAttribute(cfg.getKey(), cfg.getValue());
         }
+
+        // 容器启动事件
+        this.getWebApplicationContext().publishEvent(new ServletReadyEvent(Boolean.TRUE));
     }
 
     /** 

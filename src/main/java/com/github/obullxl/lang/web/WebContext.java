@@ -14,6 +14,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import org.apache.commons.lang.BooleanUtils;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.util.Assert;
 
 /**
@@ -28,6 +29,9 @@ public final class WebContext {
 
     /** Redirect标志 */
     public static final String                   REDIRECT_FLAG_KEY = "redirect_flag";
+
+    /** 静态服务器 */
+    public static final String                   IMAGE_HOST_KEY    = "ictx";
 
     /** Web请求容器 */
     private static final ThreadLocal<WebContext> _holder           = new ThreadLocal<WebContext>();
@@ -49,6 +53,13 @@ public final class WebContext {
      */
     public static final void init(ServletConfig _config) {
         WebContext.config = _config;
+    }
+
+    /**
+     * 检查是否初始化完成
+     */
+    public static final boolean isReady() {
+        return (getServletConfig() != null);
     }
 
     /**
@@ -113,6 +124,29 @@ public final class WebContext {
     }
 
     /**
+     * 获取静态服务器
+     */
+    public static String getImageHostCtx() {
+        String ictx = (String) getServletContext().getAttribute(IMAGE_HOST_KEY);
+        if (StringUtils.isBlank(ictx)) {
+            ictx = getServletContext().getContextPath();
+        }
+
+        return ictx;
+    }
+
+    /**
+     * 设置静态服务器
+     */
+    public static void setImageHostCtx(String ictx) {
+        if (StringUtils.isBlank(ictx)) {
+            ictx = getServletContext().getContextPath();
+        }
+
+        getServletContext().setAttribute(IMAGE_HOST_KEY, ictx);
+    }
+
+    /**
      * 获取请求对象
      */
     public HttpServletRequest getRequest() {
@@ -143,15 +177,15 @@ public final class WebContext {
     /**
      * 获取容器配置
      */
-    public ServletConfig getServletConfig() {
+    public static ServletConfig getServletConfig() {
         return WebContext.config;
     }
 
     /**
      * 获取容器上下文
      */
-    public ServletContext getServletContext() {
-        return this.getServletConfig().getServletContext();
+    public static ServletContext getServletContext() {
+        return getServletConfig().getServletContext();
     }
 
     /**
