@@ -20,6 +20,8 @@ public class VelocityConfigurerExt extends VelocityConfigurer {
      */
     protected void postProcessVelocityEngine(VelocityEngine engine) {
         super.postProcessVelocityEngine(engine);
+        
+        VelocityEngineHolder.init(engine);
     }
 
 }
