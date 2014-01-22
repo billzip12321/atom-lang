@@ -137,6 +137,7 @@ public class DispatcherServletExt extends DispatcherServlet {
             // 清理计时
             Profiler.release();
             this.dumpPerformance();
+            Profiler.reset();
 
             LogUtils.removeLogID();
         }
