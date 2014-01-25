@@ -14,7 +14,7 @@ import org.apache.commons.lang.StringUtils;
  */
 public class WebViewThemeHolder {
     /** 默认主题 */
-    public static String                     DEFAULT   = "default";
+    public static String                     DEFAULT   = "bootword";
 
     /** 主题参数KEY */
     public static final String               THEME_KEY = "_theme";

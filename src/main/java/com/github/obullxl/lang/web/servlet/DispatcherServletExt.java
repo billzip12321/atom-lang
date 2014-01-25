@@ -19,17 +19,20 @@ import org.apache.commons.lang.BooleanUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.SystemUtils;
 import org.apache.commons.lang.math.NumberUtils;
+import org.apache.velocity.app.VelocityEngine;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationContext;
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.servlet.DispatcherServlet;
 import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.util.UrlPathHelper;
 
 import com.github.obullxl.lang.Profiler;
 import com.github.obullxl.lang.ToString;
 import com.github.obullxl.lang.config.ConfigFactory;
 import com.github.obullxl.lang.spring.ServletReadyEvent;
+import com.github.obullxl.lang.spring.web.VelocityEngineFactory;
 import com.github.obullxl.lang.spring.web.WebViewThemeHolder;
 import com.github.obullxl.lang.utils.DateUtils;
 import com.github.obullxl.lang.utils.LogUtils;
@@ -46,13 +49,23 @@ import com.github.obullxl.lang.xhelper.XHelperUtils;
  * @version $Id: DispatcherServletExt.java, V1.0.1 2013年11月25日 下午3:45:47 $
  */
 public class DispatcherServletExt extends DispatcherServlet {
-    private static final long   serialVersionUID = 3846370305975208566L;
+    private static final long     serialVersionUID                  = 3846370305975208566L;
 
     /** Logger */
-    private static final Logger logger           = LoggerFactory.getLogger("SERVLET");
+    private static final Logger   logger                            = LoggerFactory.getLogger("SERVLET");
+
+    /** Velocity引擎工厂Bean名称 */
+    public static final String    VELOCITY_ENGINE_FACTORY_BEAN_NAME = "velocityEngineFactory";
+
+    /** URL路径工具类 */
+    private final UrlPathHelper   urlPathHelper                     = new UrlPathHelper();
 
     /** 性能时长 */
-    private long                perfThreshold    = 5000;
+    private long                  perfThreshold                     = 5000;
+
+    /** Velocity引擎工厂 */
+    private VelocityEngine        velocityEngine;
+    private VelocityEngineFactory velocityEngineFactory;
 
     /** 
      * @see javax.servlet.GenericServlet#init(javax.servlet.ServletConfig)
@@ -69,7 +82,7 @@ public class DispatcherServletExt extends DispatcherServlet {
 
         // 上下文
         config.getServletContext().setAttribute("ctx", config.getServletContext().getContextPath());
-        
+
         String rootPath = WebContext.getServletContext().getRealPath("/");
         rootPath = FilenameUtils.normalizeNoEndSeparator(rootPath, true);
         config.getServletContext().setAttribute("ctxRootPath", rootPath);
@@ -102,6 +115,10 @@ public class DispatcherServletExt extends DispatcherServlet {
      */
     protected void onRefresh(ApplicationContext context) {
         super.onRefresh(context);
+
+        // 获取Velocity引擎
+        this.velocityEngineFactory = context.getBean(VELOCITY_ENGINE_FACTORY_BEAN_NAME, VelocityEngineFactory.class);
+        this.velocityEngine = this.velocityEngineFactory.get();
 
         // 增加XHelper工具类
         Map<String, XHelper> helpers = XHelperUtils.findXHelpers();
@@ -140,6 +157,29 @@ public class DispatcherServletExt extends DispatcherServlet {
             Profiler.reset();
 
             LogUtils.removeLogID();
+        }
+    }
+
+    /** 
+     * @see org.springframework.web.servlet.DispatcherServlet#noHandlerFound(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
+     */
+    protected void noHandlerFound(HttpServletRequest request, HttpServletResponse response) throws Exception {
+        // 尝试直接展示View视图
+        String uri = this.urlPathHelper.getRequestUri(request);
+        if (!StringUtils.startsWith(uri, "/")) {
+            uri = "/" + uri;
+        }
+
+        uri = StringUtils.substringBeforeLast(uri, ".");
+        if (this.velocityEngine.resourceExists(uri + ".vm")) {
+            // 直接展示视图
+            this.render(new ModelAndView(uri), request, response);
+        } else if (this.velocityEngine.resourceExists("/" + WebViewThemeHolder.get() + uri + ".vm")) {
+            // 直接展示视图(带主题)
+            this.render(new ModelAndView("/" + WebViewThemeHolder.get() + uri), request, response);
+        } else {
+            // 处理器没有找到错误
+            super.noHandlerFound(request, response);
         }
     }
 

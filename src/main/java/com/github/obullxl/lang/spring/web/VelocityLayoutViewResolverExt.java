@@ -21,13 +21,16 @@ import com.github.obullxl.lang.utils.LogUtils;
  */
 public class VelocityLayoutViewResolverExt extends VelocityLayoutViewResolver implements InitializingBean {
     /** Logger */
-    private static final Logger logger    = LogUtils.get();
+    private static final Logger   logger    = LogUtils.get();
 
     /** VM文件后缀 */
-    public static final String  VM_SUFFIX = ".vm";
+    public static final String    VM_SUFFIX = ".vm";
 
     /** 基于主题模板 */
-    private String              themeLayoutUrl;
+    private String                themeLayoutUrl;
+
+    /** Velocity引擎 */
+    private VelocityEngineFactory velocityEngineFactory;
 
     /** 
      * @see org.springframework.beans.factory.InitializingBean#afterPropertiesSet()
@@ -61,7 +64,7 @@ public class VelocityLayoutViewResolverExt extends VelocityLayoutViewResolver im
 
         // 1.(/admin/topic ==> /admin/layout/topic.vm)
         String layout = path + "/layout/" + vname + VM_SUFFIX;
-        if (VelocityEngineHolder.get().resourceExists(layout)) {
+        if (this.velocityEngineFactory.get().resourceExists(layout)) {
             view.setLayoutUrl(layout);
 
             if (logger.isDebugEnabled()) {
@@ -73,7 +76,7 @@ public class VelocityLayoutViewResolverExt extends VelocityLayoutViewResolver im
 
         // 2.(/admin/topic ==> /admin/layout/layout.vm)
         layout = path + "/layout/layout" + VM_SUFFIX;
-        if (VelocityEngineHolder.get().resourceExists(layout)) {
+        if (this.velocityEngineFactory.get().resourceExists(layout)) {
             view.setLayoutUrl(layout);
 
             if (logger.isDebugEnabled()) {
@@ -87,7 +90,7 @@ public class VelocityLayoutViewResolverExt extends VelocityLayoutViewResolver im
         path = StringUtils.substringBeforeLast(path, "/");
         while (StringUtils.isNotBlank(path)) {
             layout = path + "/layout/layout" + VM_SUFFIX;
-            if (VelocityEngineHolder.get().resourceExists(layout)) {
+            if (this.velocityEngineFactory.get().resourceExists(layout)) {
                 view.setLayoutUrl(layout);
 
                 if (logger.isDebugEnabled()) {
@@ -126,6 +129,10 @@ public class VelocityLayoutViewResolverExt extends VelocityLayoutViewResolver im
 
     public void setThemeLayoutUrl(String themeLayoutUrl) {
         this.themeLayoutUrl = themeLayoutUrl;
+    }
+
+    public void setVelocityEngineFactory(VelocityEngineFactory velocityEngineFactory) {
+        this.velocityEngineFactory = velocityEngineFactory;
     }
 
 }
