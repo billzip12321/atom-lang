@@ -4,7 +4,7 @@
  */
 package com.atom.core.lang.utils;
 
-import com.github.obullxl.lang.utils.CfgUtils;
+import com.github.obullxl.lang.utils.CfgPathUtils;
 import com.github.obullxl.lang.utils.TemplateUtils;
 
 /**
@@ -19,7 +19,7 @@ public class TemplateUtilsTest {
      * @param args
      */
     public static void main(String[] args) {
-        TemplateUtils.setTplPath(CfgUtils.findConfigPath() + "/templates");
+        TemplateUtils.setTplPath(CfgPathUtils.findConfigPath() + "/templates");
 
         String t01 = TemplateUtils.render("Template01.html");
         System.out.println(t01);

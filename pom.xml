@@ -68,15 +68,21 @@
 		<!-- ======================================== -->
 		<dependency>
 			<groupId>org.springframework</groupId>
-			<artifactId>spring-context-support</artifactId>
-			<version>3.2.5.RELEASE</version>
-			<scope>provided</scope>
+			<artifactId>spring-orm</artifactId>
+			<version>4.0.0.RELEASE</version>
+			<scope>test</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-webmvc</artifactId>
-			<version>3.2.5.RELEASE</version>
-			<scope>provided</scope>
+			<version>4.0.0.RELEASE</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-context-support</artifactId>
+			<version>4.0.0.RELEASE</version>
+			<scope>test</scope>
 		</dependency>
 
 		<!-- ======================================== -->
@@ -178,6 +184,16 @@
 		</dependency>
 
 		<!-- ======================================== -->
+		<!-- 调度器相关依赖 -->
+		<!-- ======================================== -->
+		<dependency>
+			<groupId>org.quartz-scheduler</groupId>
+			<artifactId>quartz</artifactId>
+			<version>1.8.6</version>
+			<scope>test</scope>
+		</dependency>
+
+		<!-- ======================================== -->
 		<!-- JDBC数据库依赖 -->
 		<!-- ======================================== -->
 		<dependency>
@@ -243,24 +259,6 @@
 					<target>1.6</target>
 					<encoding>UTF-8</encoding>
 				</configuration>
-			</plugin>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-assembly-plugin</artifactId>
-				<version>2.3</version>
-				<configuration>
-					<descriptorRefs>
-						<descriptorRef>jar-with-dependencies</descriptorRef>
-					</descriptorRefs>
-				</configuration>
-				<executions>
-					<execution>
-						<phase>package</phase>
-						<goals>
-							<goal>single</goal>
-						</goals>
-					</execution>
-				</executions>
 			</plugin>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>

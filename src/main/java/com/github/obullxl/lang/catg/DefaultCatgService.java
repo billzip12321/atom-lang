@@ -4,14 +4,14 @@
  */
 package com.github.obullxl.lang.catg;
 
-import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 
 import org.jsoup.helper.Validate;
 import org.slf4j.Logger;
 
+import com.github.obullxl.lang.timer.TickTimer;
+import com.github.obullxl.lang.utils.DateUtils;
 import com.github.obullxl.lang.utils.LogUtils;
 
 /**
@@ -20,16 +20,18 @@ import com.github.obullxl.lang.utils.LogUtils;
  * @author obullxl@gmail.com
  * @version $Id: DefaultCfgService.java, V1.0.1 2014年1月26日 上午9:51:25 $
  */
-public class DefaultCatgService implements CatgService {
+public class DefaultCatgService implements TickTimer, CatgService {
     /** Logger */
-    private static final Logger               logger = LogUtils.get();
+    private static final Logger logger   = LogUtils.get();
 
-    /** 缓存对象 */
-    private static final List<CatgDTO>        roots  = new ArrayList<CatgDTO>();
-    private static final Map<String, CatgDTO> cache  = new ConcurrentHashMap<String, CatgDTO>();
+    /** 最近执行时间 */
+    private static Date         EXEC_TIME;
+
+    /** 执行时间间隔(13分钟) */
+    private static final long   INTERVAL = 13 * 60 * 1000;
 
     /** 模块分类DAO */
-    private CatgDAO                           catgDAO;
+    private CatgDAO             catgDAO;
 
     /**
      * 系统初始化
@@ -39,6 +41,39 @@ public class DefaultCatgService implements CatgService {
 
         // 刷新缓存
         this.onRefresh();
+    }
+
+    /** 
+     * @see com.github.obullxl.lang.timer.TickTimer#tick()
+     */
+    public void tick() {
+        if (!this.isMustExecute()) {
+            if (logger.isInfoEnabled()) {
+                logger.info("[模块分类]-本次无需操作, [" + DateUtils.toStringDL(EXEC_TIME) + "].");
+            }
+
+            return;
+        }
+
+        // 定时刷新
+        this.onRefresh();
+    }
+
+    /**
+     * 是否进行缓存刷新
+     */
+    private boolean isMustExecute() {
+        if (EXEC_TIME == null) {
+            EXEC_TIME = DateUtils.toDateDW("1988-08-08");
+        }
+
+        Date now = new Date();
+        if (now.getTime() - EXEC_TIME.getTime() >= INTERVAL) {
+            EXEC_TIME = now;
+            return true;
+        }
+
+        return false;
     }
 
     /**
@@ -51,33 +86,9 @@ public class DefaultCatgService implements CatgService {
         try {
             // 查询所有
             List<CatgDTO> dtos = this.catgDAO.find();
-
-            // 构建Map树
-            roots.clear();
-            cache.clear();
-
-            for (CatgDTO dto : dtos) {
-                cache.put(dto.getCode(), dto);
-            }
-
-            for (CatgDTO dto : dtos) {
-                String catg = dto.getCatg();
-                CatgDTO parent = cache.get(catg);
-
-                if (parent != null) {
-                    dto.setParent(parent);
-                    parent.getChildren().add(dto);
-                }
-            }
-
-            // 树根节点
-            for (CatgDTO catg : dtos) {
-                if (catg.getParent() == null) {
-                    roots.add(catg);
-                }
-            }
+            CatgUtils.onRefresh(dtos);
         } finally {
-            logger.warn("[模块分类]-模块分类缓存刷新完成, 耗时[{}]ms, 参数列表: \n{}", (System.currentTimeMillis() - start), cache);
+            logger.warn("[模块分类]-模块分类缓存刷新完成, 耗时[{}]ms, 参数列表: \n{}", (System.currentTimeMillis() - start), CatgUtils.find());
         }
     }
 
@@ -102,8 +113,7 @@ public class DefaultCatgService implements CatgService {
      */
     public void remove() {
         this.catgDAO.delete();
-        roots.clear();
-        cache.clear();
+        CatgUtils.remove();
     }
 
     /**
@@ -112,20 +122,6 @@ public class DefaultCatgService implements CatgService {
     public void remove(String code) {
         this.catgDAO.delete(code);
         this.onRefresh();
-    }
-
-    /**
-     * 查询模块分类
-     */
-    public List<CatgDTO> find() {
-        return new ArrayList<CatgDTO>(cache.values());
-    }
-
-    /**
-     * 查询模块分类
-     */
-    public CatgDTO find(String code) {
-        return cache.get(code);
     }
 
     // ~~~~~~~~~~~~ 依赖注入 ~~~~~~~~~~~~ //

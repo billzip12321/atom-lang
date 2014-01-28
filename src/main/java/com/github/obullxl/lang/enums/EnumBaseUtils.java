@@ -30,4 +30,19 @@ public class EnumBaseUtils {
         return map;
     }
 
+    /**
+     * 枚举转化为Map
+     */
+    public static Map<String, EnumBase> toEnumMap(EnumBase[] enumms) {
+        Map<String, EnumBase> map = new LinkedHashMap<String, EnumBase>();
+
+        if (enumms != null) {
+            for (EnumBase enumm : enumms) {
+                map.put(enumm.code(), enumm);
+            }
+        }
+
+        return map;
+    }
+
 }

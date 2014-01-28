@@ -4,46 +4,56 @@
  */
 package com.github.obullxl.lang.enums;
 
+import java.util.Map;
+
 import org.apache.commons.lang.StringUtils;
 
 /**
- * 图片类型枚举
+ * 用户性别枚举
  * 
  * @author obullxl@gmail.com
- * @version $Id: ImageTypeEnum.java, V1.0.1 2014年1月5日 上午9:24:31 $
+ * @version $Id: UserSexEnum.java, V1.0.1 2014年1月28日 上午9:31:16 $
  */
-public enum ImageTypeEnum implements EnumBase {
+public enum UserSexEnum implements EnumBase {
     //
-    IMG_BMP("B", "bmp"),
+    MALE(1, "M", "男"),
     //
-    IMG_GIF("G", "gif"),
-    //
-    IMG_JPG("J", "jpg"),
-    //
-    IMG_PNG("P", "png"),
+    FEMALE(2, "F", "女"),
     //
     ;
 
+    private final int    id;
     private final String code;
-    private final String ext;
+    private final String desp;
 
-    private ImageTypeEnum(String code, String ext) {
+    /**
+     * CTOR
+     */
+    private UserSexEnum(int id, String code, String desp) {
+        this.id = id;
         this.code = code;
-        this.ext = ext;
+        this.desp = desp;
     }
 
     /**
      * 获取默认类型
      */
-    public static final ImageTypeEnum findDefault() {
-        return IMG_JPG;
+    public static final UserSexEnum findDefault() {
+        return MALE;
+    }
+
+    /**
+     * 转换为Map映射
+     */
+    public static final Map<String, EnumBase> toMap() {
+        return EnumBaseUtils.toEnumMap(values());
     }
 
     /**
      * 根据代码获取枚举
      */
-    public static final ImageTypeEnum findByCode(String code) {
-        for (ImageTypeEnum enm : values()) {
+    public static final UserSexEnum findByCode(String code) {
+        for (UserSexEnum enm : values()) {
             if (StringUtils.equalsIgnoreCase(enm.code(), code)) {
                 return enm;
             }
@@ -52,18 +62,11 @@ public enum ImageTypeEnum implements EnumBase {
         return null;
     }
 
-    /**
-     * 获取图片后缀
-     */
-    public String findImageExt() {
-        return "." + this.ext;
-    }
-
     /** 
      * @see com.github.obullxl.lang.enums.EnumBase#id()
      */
     public int id() {
-        return this.ordinal();
+        return this.id;
     }
 
     /** 
@@ -77,11 +80,7 @@ public enum ImageTypeEnum implements EnumBase {
      * @see com.github.obullxl.lang.enums.EnumBase#desp()
      */
     public String desp() {
-        return this.code();
-    }
-
-    public String getExt() {
-        return ext;
+        return this.desp;
     }
 
 }

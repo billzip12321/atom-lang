@@ -10,12 +10,12 @@ import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang.StringUtils;
 
 /**
- * 默认配置工具类
+ * 默认配置路径工具类
  * 
  * @author obullxl@gmail.com
- * @version $Id: CfgUtils.java, 2012-8-18 下午8:25:49 Exp $
+ * @version $Id: CfgPathUtils.java, 2012-8-18 下午8:25:49 Exp $
  */
-public class CfgUtils {
+public class CfgPathUtils {
 
     /** 根目录 */
     private static String ROOT_PATH        = "";

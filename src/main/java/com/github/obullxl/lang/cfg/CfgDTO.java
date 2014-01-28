@@ -4,8 +4,6 @@
  */
 package com.github.obullxl.lang.cfg;
 
-import java.util.Comparator;
-
 import org.apache.commons.lang.StringUtils;
 
 import com.github.obullxl.lang.biz.BaseDTO;
@@ -16,7 +14,7 @@ import com.github.obullxl.lang.biz.BaseDTO;
  * @author obullxl@gmail.com
  * @version $Id: CfgDTO.java, V1.0.1 2014年1月26日 上午9:34:16 $
  */
-public class CfgDTO extends BaseDTO implements Comparator<CfgDTO> {
+public class CfgDTO extends BaseDTO implements Comparable<CfgDTO> {
     private static final long serialVersionUID = -7633475123340121704L;
 
     /** 参数分类 */
@@ -37,16 +35,12 @@ public class CfgDTO extends BaseDTO implements Comparator<CfgDTO> {
     /** 
      * @see java.util.Comparator#compare(java.lang.Object, java.lang.Object)
      */
-    public int compare(CfgDTO src, CfgDTO dst) {
-        if (src == null) {
-            return -1;
-        }
-
+    public int compareTo(CfgDTO dst) {
         if (dst == null) {
             return 1;
         }
 
-        String scatg = StringUtils.trimToEmpty(src.getCatg()) + StringUtils.trimToEmpty(src.getName());
+        String scatg = StringUtils.trimToEmpty(this.getCatg()) + StringUtils.trimToEmpty(this.getName());
         String dcatg = StringUtils.trimToEmpty(dst.getCatg()) + StringUtils.trimToEmpty(dst.getName());
 
         return scatg.compareTo(dcatg);

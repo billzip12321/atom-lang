@@ -4,7 +4,6 @@
 package com.github.obullxl.lang.catg;
 
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
 
 import com.github.obullxl.lang.biz.BaseDTO;
@@ -15,7 +14,7 @@ import com.github.obullxl.lang.biz.BaseDTO;
  * @author obullxl@gmail.com
  * @version $Id: CatgDTO.java, V1.0.1 2014年1月26日 下午12:01:43 $
  */
-public class CatgDTO extends BaseDTO implements Comparator<CatgDTO> {
+public class CatgDTO extends BaseDTO implements Comparable<CatgDTO> {
     private static final long serialVersionUID = 590577067746906426L;
 
     /** parent */
@@ -45,10 +44,10 @@ public class CatgDTO extends BaseDTO implements Comparator<CatgDTO> {
     }
 
     /** 
-     * @see java.util.Comparator#compare(java.lang.Object, java.lang.Object)
+     * @see java.lang.Comparable#compareTo(java.lang.Object)
      */
-    public int compare(CatgDTO src, CatgDTO dst) {
-        if (src == null || src.getSort() == null) {
+    public int compareTo(CatgDTO dst) {
+        if (this.getSort() == null) {
             return -1;
         }
 
@@ -56,7 +55,7 @@ public class CatgDTO extends BaseDTO implements Comparator<CatgDTO> {
             return 1;
         }
 
-        return src.getSort().compareTo(dst.getSort());
+        return this.getSort().compareTo(dst.getSort());
     }
 
     /** 上级分类 */

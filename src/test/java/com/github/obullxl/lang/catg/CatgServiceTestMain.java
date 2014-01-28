@@ -20,7 +20,10 @@ public class CatgServiceTestMain {
     private static final Logger logger = LogUtils.get();
 
     public static void main(String[] args) {
-        ApplicationContext actxt = new ClassPathXmlApplicationContext("classpath:/how-to-use/catg-spring.xml");
+        ApplicationContext actxt = new ClassPathXmlApplicationContext(//
+            "classpath:/how-to-use/catg-spring.xml",//
+            "classpath:/spring/tick-timer-config.xml");
+
         CatgService catgService = actxt.getBean(CatgService.class);
 
         // 1.清理

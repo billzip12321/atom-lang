@@ -4,14 +4,14 @@
  */
 package com.github.obullxl.lang.cfg;
 
-import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 
 import org.jsoup.helper.Validate;
 import org.slf4j.Logger;
 
+import com.github.obullxl.lang.timer.TickTimer;
+import com.github.obullxl.lang.utils.DateUtils;
 import com.github.obullxl.lang.utils.LogUtils;
 
 /**
@@ -20,24 +20,60 @@ import com.github.obullxl.lang.utils.LogUtils;
  * @author obullxl@gmail.com
  * @version $Id: DefaultCfgService.java, V1.0.1 2014年1月26日 上午9:51:25 $
  */
-public class DefaultCfgService implements CfgService {
+public class DefaultCfgService implements TickTimer, CfgService {
     /** Logger */
-    private static final Logger                           logger = LogUtils.get();
+    private static final Logger logger   = LogUtils.get();
 
-    /** 缓存对象 */
-    private static final Map<String, Map<String, CfgDTO>> cache  = new ConcurrentHashMap<String, Map<String, CfgDTO>>();
+    /** 最近执行时间 */
+    private static Date         EXEC_TIME;
+
+    /** 执行时间间隔(11分钟) */
+    private static final long   INTERVAL = 11 * 60 * 1000;
 
     /** 系统参数DAO */
-    private CfgDAO                                        cfgDAO;
+    private CfgDAO              cfgDAO;
 
     /**
      * 系统初始化
      */
     public void init() {
         Validate.notNull(this.cfgDAO, "[系统参数]-CfgDAO注入失败!");
-        
+
         // 刷新缓存
         this.onRefresh();
+    }
+
+    /** 
+     * @see com.github.obullxl.lang.timer.TickTimer#tick()
+     */
+    public void tick() {
+        if (!this.isMustExecute()) {
+            if (logger.isInfoEnabled()) {
+                logger.info("[系统参数]-本次无需操作, [" + DateUtils.toStringDL(EXEC_TIME) + "].");
+            }
+
+            return;
+        }
+
+        // 定时刷新
+        this.onRefresh();
+    }
+
+    /**
+     * 是否进行缓存刷新
+     */
+    private boolean isMustExecute() {
+        if (EXEC_TIME == null) {
+            EXEC_TIME = DateUtils.toDateDW("1988-08-08");
+        }
+
+        Date now = new Date();
+        if (now.getTime() - EXEC_TIME.getTime() >= INTERVAL) {
+            EXEC_TIME = now;
+            return true;
+        }
+
+        return false;
     }
 
     /**
@@ -51,50 +87,11 @@ public class DefaultCfgService implements CfgService {
             List<CfgDTO> cfgs = this.cfgDAO.find();
             if (cfgs != null) {
                 for (CfgDTO cfg : cfgs) {
-                    this.updateCache(cfg);
+                    CfgUtils.updateCache(cfg);
                 }
             }
         } finally {
-            logger.warn("[系统参数]-系统参数缓存刷新完成, 耗时[{}]ms, 参数列表: \n{}", (System.currentTimeMillis() - start), cache);
-        }
-    }
-
-    /**
-     * 刷新缓存
-     */
-    private void updateCache(CfgDTO cfg) {
-        Map<String, CfgDTO> catgs = cache.get(cfg.getCatg());
-
-        if (catgs == null) {
-            catgs = new ConcurrentHashMap<String, CfgDTO>();
-            cache.put(cfg.getCatg(), catgs);
-        }
-
-        catgs.put(cfg.getName(), cfg);
-    }
-
-    /**
-     * 删除缓存
-     */
-    private void removeCache() {
-        cache.clear();
-    }
-
-    /**
-     * 删除缓存
-     */
-    private void removeCache(String catg) {
-        cache.remove(catg);
-    }
-
-    /**
-     * 删除缓存
-     */
-    private void removeCache(String catg, String name) {
-        Map<String, CfgDTO> catgs = cache.get(catg);
-
-        if (catgs != null) {
-            catgs.remove(name);
+            logger.warn("[系统参数]-系统参数缓存刷新完成, 耗时[{}]ms, 参数列表: \n{}", (System.currentTimeMillis() - start), CfgUtils.find());
         }
     }
 
@@ -103,7 +100,7 @@ public class DefaultCfgService implements CfgService {
      */
     public void create(CfgDTO cfg) {
         this.cfgDAO.insert(cfg);
-        this.updateCache(cfg);
+        CfgUtils.updateCache(cfg);
     }
 
     /**
@@ -111,7 +108,7 @@ public class DefaultCfgService implements CfgService {
      */
     public void update(CfgDTO cfg) {
         this.cfgDAO.update(cfg);
-        this.updateCache(cfg);
+        CfgUtils.updateCache(cfg);
     }
 
     /**
@@ -119,7 +116,7 @@ public class DefaultCfgService implements CfgService {
      */
     public void remove() {
         this.cfgDAO.delete();
-        this.removeCache();
+        CfgUtils.removeCache();
     }
 
     /**
@@ -127,7 +124,7 @@ public class DefaultCfgService implements CfgService {
      */
     public void remove(String catg) {
         this.cfgDAO.delete(catg);
-        this.removeCache(catg);
+        CfgUtils.removeCache(catg);
     }
 
     /**
@@ -135,50 +132,7 @@ public class DefaultCfgService implements CfgService {
      */
     public void remove(String catg, String name) {
         this.cfgDAO.delete(catg, name);
-        this.removeCache(catg, name);
-    }
-
-    /**
-     * 查询系统参数
-     */
-    public List<CfgDTO> find() {
-        List<CfgDTO> cfgs = new ArrayList<CfgDTO>();
-
-        for (Map.Entry<String, Map<String, CfgDTO>> cfgEntry : cache.entrySet()) {
-            if (cfgEntry != null) {
-                for (Map.Entry<String, CfgDTO> entry : cfgEntry.getValue().entrySet()) {
-                    cfgs.add(entry.getValue());
-                }
-            }
-        }
-
-        return cfgs;
-    }
-
-    /**
-     * 查询系统参数
-     */
-    public List<CfgDTO> find(String catg) {
-        List<CfgDTO> cfgs = new ArrayList<CfgDTO>();
-
-        Map<String, CfgDTO> entry = cache.get(catg);
-        if (entry != null) {
-            cfgs.addAll(entry.values());
-        }
-
-        return cfgs;
-    }
-
-    /**
-     * 查询系统参数
-     */
-    public CfgDTO find(String catg, String name) {
-        Map<String, CfgDTO> entry = cache.get(catg);
-        if (entry != null) {
-            return entry.get(name);
-        }
-
-        return null;
+        CfgUtils.removeCache(catg, name);
     }
 
     // ~~~~~~~~~~~~ 依赖注入 ~~~~~~~~~~~~ //

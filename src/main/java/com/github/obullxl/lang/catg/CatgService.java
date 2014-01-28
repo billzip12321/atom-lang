@@ -4,7 +4,6 @@
  */
 package com.github.obullxl.lang.catg;
 
-import java.util.List;
 
 /**
  * 模块分类服务
@@ -38,15 +37,5 @@ public interface CatgService {
      * 删除模块分类
      */
     public void remove(String code);
-
-    /**
-     * 查询模块分类
-     */
-    public List<CatgDTO> find();
-
-    /**
-     * 查询模块分类
-     */
-    public CatgDTO find(String code);
 
 }

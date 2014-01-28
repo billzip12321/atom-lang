@@ -4,8 +4,6 @@
  */
 package com.github.obullxl.lang.timer;
 
-import java.util.Date;
-
 /**
  * 定时器
  * 
@@ -15,15 +13,8 @@ import java.util.Date;
 public interface TickTimer {
 
     /**
-     * 定时器名称
-     */
-    public String name();
-
-    /**
      * 定时器触发
-     * 
-     * @param start 触发时间
      */
-    public void tick(Date start);
+    public void tick();
 
 }

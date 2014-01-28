@@ -2,31 +2,24 @@
 <beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd" default-autowire="byName">
 
 	<!-- ============================= -->
-	<!-- 定时器组件 -->
-	<!-- ============================= -->
-	<bean class="com.github.obullxl.lang.timer.TickTimerBean" />
-
-	<!-- ============================= -->
 	<!-- 调度器配置 -->
 	<!-- ============================= -->
-
-	<bean id="tickTimerTask" class="com.github.obullxl.lang.timer.TickTimerTask" />
-
-	<bean id="tickTimerJobDetail" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
-		<property name="targetObject" ref="tickTimerTask" />
-		<property name="targetMethod" value="doTask" />
-	</bean>
-
-	<bean id="tickTimerTrigger" class="org.springframework.scheduling.quartz.SimpleTriggerBean">
-		<property name="jobDetail" ref="tickTimerJobDetail" />
-		<property name="startDelay" value="10000" /><!-- 延迟10秒执行 -->
-		<property name="repeatInterval" value="30000" /><!-- 30秒执行一次 -->
-	</bean>
-
 	<bean class="org.springframework.scheduling.quartz.SchedulerFactoryBean">
 		<property name="triggers">
 			<list>
-				<ref bean="tickTimerTrigger" />
+				<bean class="org.springframework.scheduling.quartz.CronTriggerBean">
+					<property name="jobDetail">
+						<bean class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+							<property name="targetMethod" value="doTask" />
+							<property name="targetObject">
+								<bean class="com.github.obullxl.lang.timer.TickTimerTask" />
+							</property>
+						</bean>
+					</property>
+					<property name="cronExpression">
+						<value>3 0/1 * * * ?</value>
+					</property>
+				</bean>
 			</list>
 		</property>
 		<property name="taskExecutor">

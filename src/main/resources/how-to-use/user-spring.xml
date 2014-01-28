@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd" default-autowire="byName">
+
+	<!-- ===================================== -->
+	<!-- 用户模型服务配置 -->
+	<!-- ===================================== -->
+	<bean id="userService" class="com.github.obullxl.lang.user.DefaultUserService" init-method="init">
+		<property name="userDAO">
+			<bean class="com.github.obullxl.lang.user.UserDAO" init-method="init">
+				<property name="dataSource">
+					<bean class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close">
+						<property name="driverClassName" value="com.mysql.jdbc.Driver" />
+						<property name="url" value="jdbc:mysql://127.0.01:3306/osnode?useUnicode=true&amp;characterEncoding=UTF8" />
+						<property name="username" value="osnode" />
+						<property name="password" value="site" />
+						<property name="minIdle" value="1" />
+						<property name="maxIdle" value="2" />
+						<property name="maxActive" value="3" />
+					</bean>
+				</property>
+				<property name="tableName" value="atom_user" />
+				<property name="noFieldName" value="no" />
+				<property name="flagFieldName" value="flag" />
+				<property name="nickNameFieldName" value="nick_name" />
+				<property name="passwdFieldName" value="passwd" />
+				<property name="passwdErrCountFieldName" value="passwd_err_count" />
+				<property name="registDateFieldName" value="regist_date" />
+				<property name="activeDateFieldName" value="active_date" />
+				<property name="authDateFieldName" value="auth_date" />
+				<property name="mobileFieldName" value="mobile" />
+				<property name="emailFieldName" value="email" />
+				<property name="realNameFieldName" value="real_name" />
+				<property name="birthDateFieldName" value="birth_date" />
+				<property name="avatarPathFieldName" value="avatar_path" />
+				<property name="postCodeFieldName" value="post_code" />
+				<property name="provinceCodeFieldName" value="province_code" />
+				<property name="cityCodeFieldName" value="city_code" />
+				<property name="countyCodeFieldName" value="county_code" />
+				<property name="streetInfoFieldName" value="street_info" />
+				<property name="gmtCreateFieldName" value="gmt_create" />
+				<property name="gmtModifyFieldName" value="gmt_modify" />
+			</bean>
+		</property>
+	</bean>
+
+</beans>

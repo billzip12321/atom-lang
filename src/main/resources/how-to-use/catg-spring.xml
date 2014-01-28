@@ -2,9 +2,9 @@
 <beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd" default-autowire="byName">
 
 	<!-- ===================================== -->
-	<!-- 系统参数服务配置 -->
+	<!-- 模块分类服务配置 -->
 	<!-- ===================================== -->
-	<bean id="cfgService" class="com.github.obullxl.lang.catg.DefaultCatgService" init-method="init">
+	<bean id="catgService" class="com.github.obullxl.lang.catg.DefaultCatgService" init-method="init">
 		<property name="catgDAO">
 			<bean class="com.github.obullxl.lang.catg.CatgDAO" init-method="init">
 				<property name="dataSource">

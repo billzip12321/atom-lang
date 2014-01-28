@@ -20,12 +20,15 @@ public class CfgServiceTestMain {
     private static final Logger logger = LogUtils.get();
 
     public static void main(String[] args) {
-        ApplicationContext actxt = new ClassPathXmlApplicationContext("classpath:/how-to-use/cfg-spring.xml");
+        ApplicationContext actxt = new ClassPathXmlApplicationContext(//
+            "classpath:/how-to-use/cfg-spring.xml",//
+            "classpath:/spring/tick-timer-config.xml");
+        
         CfgService cfgService = actxt.getBean(CfgService.class);
 
         // 1.清理
         cfgService.remove();
-        
+
         // 1.创建
         CfgDTO cfg = new CfgDTO();
         cfg.setCatg("system");
@@ -33,7 +36,7 @@ public class CfgServiceTestMain {
         cfg.setTitle("测试参数01");
         cfg.setValue("test-value-01");
         cfg.setValueExt("test-value-ext-01");
-        
+
         cfgService.create(cfg);
     }
 

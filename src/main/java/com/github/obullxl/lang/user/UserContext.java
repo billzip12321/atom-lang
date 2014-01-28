@@ -19,8 +19,8 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 public class UserContext {
 
-    /** ID */
-    private long                userId;
+    /** NO */
+    private String              userNo;
 
     /** 用户名 */
     private String              userName;
@@ -53,7 +53,7 @@ public class UserContext {
     public static final UserContext newMockContext() {
         UserContext mock = new UserContext();
 
-        mock.setUserId(0L);
+        mock.setUserNo("0000000000");
         mock.setUserName("mock-user");
         mock.setUserEmail("mock@mock.com");
         mock.setUserNick("模拟用户");
@@ -64,14 +64,14 @@ public class UserContext {
         return mock;
     }
 
-    /** ~~~~~~~~~~~~~~ getters and setters ~~~~~~~~~~~~~~ */
+    // ~~~~~~~~~~~~~~ getters and setters ~~~~~~~~~~~~~~ //
 
-    public long getUserId() {
-        return userId;
+    public String getUserNo() {
+        return userNo;
     }
 
-    public void setUserId(long userId) {
-        this.userId = userId;
+    public void setUserNo(String userNo) {
+        this.userNo = userNo;
     }
 
     public String getUserName() {

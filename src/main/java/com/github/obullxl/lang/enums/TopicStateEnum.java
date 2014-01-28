@@ -1,9 +1,11 @@
 /**
  * Author: obullxl@gmail.com
- * Copyright (c) 2004-2014 All Rights Reserved.
+ * Copyright (c) 2004-2013 All Rights Reserved.
  */
 package com.github.obullxl.lang.enums;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.lang.StringUtils;
@@ -11,16 +13,20 @@ import org.apache.commons.lang.StringUtils;
 import com.github.obullxl.lang.enums.EnumBase;
 
 /**
- * 布尔开关枚举值
+ * 主题状态枚举
  * 
  * @author obullxl@gmail.com
- * @version $Id: ValveBoolEnum.java, V1.0.1 2014年1月1日 下午7:17:15 $
+ * @version $Id: TopicStateEnum.java, V1.0.1 2013年12月7日 下午12:06:35 $
  */
-public enum ValveBoolEnum implements EnumBase {
+public enum TopicStateEnum implements EnumBase {
     //
-    TRUE(1, "1", "是"),
+    VALID(1, "T", "有效"),
     //
-    FALSE(2, "0", "否"),
+    AUDIT(2, "A", "审核"),
+    //
+    DRAFT(3, "D", "草稿"),
+    //
+    INVALID(4, "F", "无效"),
     //
     ;
 
@@ -28,24 +34,30 @@ public enum ValveBoolEnum implements EnumBase {
     private final String code;
     private final String desp;
 
-    private ValveBoolEnum(int id, String code, String desp) {
+    private TopicStateEnum(int id, String code, String desp) {
         this.id = id;
         this.code = code;
         this.desp = desp;
     }
 
     /**
-     * 布尔值
+     * 获取所有代码
      */
-    public static final boolean is(String code) {
-        return findDefault(code).is();
+    public static final String[] findAllCodes() {
+        List<String> codes = new ArrayList<String>();
+
+        for (EnumBase enm : values()) {
+            codes.add(enm.code());
+        }
+
+        return codes.toArray(new String[0]);
     }
 
     /**
      * 初始状态
      */
-    public static final ValveBoolEnum findDefault() {
-        return FALSE;
+    public static final TopicStateEnum findDefault() {
+        return AUDIT;
     }
 
     /**
@@ -58,21 +70,14 @@ public enum ValveBoolEnum implements EnumBase {
     /**
      * 根据代码获取枚举
      */
-    public static final ValveBoolEnum findDefault(String code) {
-        for (ValveBoolEnum enm : values()) {
+    public static final TopicStateEnum findDefault(String code) {
+        for (TopicStateEnum enm : values()) {
             if (StringUtils.equalsIgnoreCase(enm.code(), code)) {
                 return enm;
             }
         }
 
-        return FALSE;
-    }
-
-    /**
-     * 是否为真
-     */
-    public boolean is() {
-        return (this == TRUE);
+        return findDefault();
     }
 
     /** 
