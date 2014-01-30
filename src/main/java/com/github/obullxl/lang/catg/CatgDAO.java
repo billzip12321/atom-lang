@@ -13,10 +13,7 @@ import java.util.List;
 
 import com.github.obullxl.lang.das.AbstractDAO;
 import com.github.obullxl.lang.das.JdbcInsert;
-import com.github.obullxl.lang.das.JdbcSelect;
-import com.github.obullxl.lang.das.JdbcSelect.JdbcRowMap;
 import com.github.obullxl.lang.das.JdbcStmtValue;
-import com.github.obullxl.lang.das.JdbcStmtValue.DefaultJdbcStmtValue;
 import com.github.obullxl.lang.das.JdbcUpdate;
 
 /**
@@ -25,7 +22,7 @@ import com.github.obullxl.lang.das.JdbcUpdate;
  * @author obullxl@gmail.com
  * @version $Id: CatgDAO.java, V1.0.1 2014年1月26日 上午11:59:19 $
  */
-public class CatgDAO extends AbstractDAO implements JdbcRowMap {
+public class CatgDAO extends AbstractDAO {
     public static final String NAME             = "CatgDAO";
 
     /** 上级分类 */
@@ -56,23 +53,9 @@ public class CatgDAO extends AbstractDAO implements JdbcRowMap {
     private String             tableFields;
 
     /** 
-     * @see com.github.obullxl.lang.das.AbstractDAO#init()
+     * @see com.github.obullxl.lang.das.AbstractDAO#findTableFields()
      */
-    public void init() {
-        super.init();
-
-        logger.warn("[模块分类]-数据表信息:{}({},{},{},{},{},{},{},{}).", //
-            this.tableName, this.catgFieldName, this.codeFieldName, this.sortFieldName, this.titleFieldName, //
-            this.extMapFieldName, this.summaryFieldName, this.gmtCreateFieldName, this.gmtModifyFieldName);
-
-        this.findTableFields();
-        logger.warn("[模块分类]-TableFields: {}", this.tableFields);
-    }
-
-    /**
-     * 获取SELECT SQL
-     */
-    private String findTableFields() {
+    public String findTableFields() {
         if (this.tableFields == null) {
             StringBuilder sql = new StringBuilder();
 
@@ -175,30 +158,6 @@ public class CatgDAO extends AbstractDAO implements JdbcRowMap {
                 stmt.setString(7, catg.getCode());
             }
         });
-    }
-
-    /**
-     * 查询模块分类
-     */
-    public List<CatgDTO> find() {
-        // SQL
-        StringBuilder sql = new StringBuilder();
-        sql.append("SELECT ").append(this.findTableFields());
-        sql.append(" FROM ").append(this.tableName);
-
-        // 查询
-        return JdbcSelect.selectList(this.dataSource, sql.toString(), this, new DefaultJdbcStmtValue());
-    }
-
-    /**
-     * 删除模块分类
-     */
-    public int delete() {
-        // SQL
-        String sql = "DELETE FROM " + this.tableName;
-
-        // 执行删除
-        return JdbcUpdate.executeUpdate(this.dataSource, sql, new DefaultJdbcStmtValue());
     }
 
     /**

@@ -76,7 +76,7 @@ public class DefaultUserService implements UserService {
      * @see com.github.obullxl.lang.user.UserService#find()
      */
     public List<UserDTO> find() {
-        return this.userDAO.find();
+        return this.userDAO.selectAll();
     }
 
     /** 
@@ -118,7 +118,7 @@ public class DefaultUserService implements UserService {
      * @see com.github.obullxl.lang.user.UserService#remove()
      */
     public int remove() {
-        return this.userDAO.delete();
+        return this.userDAO.deleteAll();
     }
 
     /** 

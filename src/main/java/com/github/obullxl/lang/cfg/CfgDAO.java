@@ -13,7 +13,6 @@ import java.util.List;
 import com.github.obullxl.lang.das.AbstractDAO;
 import com.github.obullxl.lang.das.JdbcInsert;
 import com.github.obullxl.lang.das.JdbcSelect;
-import com.github.obullxl.lang.das.JdbcSelect.JdbcRowMap;
 import com.github.obullxl.lang.das.JdbcStmtValue;
 import com.github.obullxl.lang.das.JdbcStmtValue.DefaultJdbcStmtValue;
 import com.github.obullxl.lang.das.JdbcUpdate;
@@ -21,7 +20,7 @@ import com.github.obullxl.lang.das.JdbcUpdate;
 /**
  * 系统参数DAO实现
  */
-public class CfgDAO extends AbstractDAO implements JdbcRowMap {
+public class CfgDAO extends AbstractDAO {
     public static final String NAME              = "CfgDAO";
 
     /** 参数分类 */
@@ -49,23 +48,9 @@ public class CfgDAO extends AbstractDAO implements JdbcRowMap {
     private String             tableFields;
 
     /** 
-     * @see com.github.obullxl.lang.das.AbstractDAO#init()
+     * @see com.github.obullxl.lang.das.AbstractDAO#findTableFields()
      */
-    public void init() {
-        super.init();
-
-        logger.warn("[系统参数]-数据表信息:{}({},{},{},{},{},{},{}).", //
-            this.tableName, this.catgFieldName, this.nameFieldName, this.titleFieldName, //
-            this.valueFieldName, this.valueExtFieldName, this.gmtCreateFieldName, this.gmtModifyFieldName);
-
-        this.findTableFields();
-        logger.warn("[系统参数]-TableFieds: {}", this.tableFields);
-    }
-
-    /**
-     * 获取SELECT SQL
-     */
-    private String findTableFields() {
+    public String findTableFields() {
         if (this.tableFields == null) {
             StringBuilder sql = new StringBuilder();
 

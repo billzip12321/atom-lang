@@ -85,7 +85,7 @@ public class DefaultCatgService implements TickTimer, CatgService {
         long start = System.currentTimeMillis();
         try {
             // 查询所有
-            List<CatgDTO> dtos = this.catgDAO.find();
+            List<CatgDTO> dtos = this.catgDAO.selectAll();
             CatgUtils.onRefresh(dtos);
         } finally {
             logger.warn("[模块分类]-模块分类缓存刷新完成, 耗时[{}]ms, 参数列表: \n{}", (System.currentTimeMillis() - start), CatgUtils.find());
@@ -112,7 +112,7 @@ public class DefaultCatgService implements TickTimer, CatgService {
      * 删除模块分类
      */
     public void remove() {
-        this.catgDAO.delete();
+        this.catgDAO.deleteAll();
         CatgUtils.remove();
     }
 

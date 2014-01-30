@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd" default-autowire="byName">
+
+	<!-- ===================================== -->
+	<!-- 用户权限服务配置 -->
+	<!-- ===================================== -->
+	<bean id="userRightService" class="com.github.obullxl.lang.right.DefaultUserRightService" init-method="init">
+		<property name="userRightDAO">
+			<bean class="com.github.obullxl.lang.right.UserRightDAO" init-method="init">
+				<property name="dataSource">
+					<bean class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close">
+						<property name="driverClassName" value="com.mysql.jdbc.Driver" />
+						<property name="url" value="jdbc:mysql://127.0.01:3306/osnode?useUnicode=true&amp;characterEncoding=UTF8" />
+						<property name="username" value="osnode" />
+						<property name="password" value="site" />
+						<property name="minIdle" value="1" />
+						<property name="maxIdle" value="2" />
+						<property name="maxActive" value="3" />
+					</bean>
+				</property>
+				<property name="tableName" value="atom_user_right" />
+				<property name="userNoFieldName" value="user_no" />
+				<property name="nickNameFieldName" value="nick_name" />
+				<property name="rgtCodeFieldName" value="rgt_code" />
+				<property name="rgtNameFieldName" value="rgt_name" />
+				<property name="extMapFieldName" value="ext_map" />
+				<property name="gmtCreateFieldName" value="gmt_create" />
+				<property name="gmtModifyFieldName" value="gmt_modify" />
+			</bean>
+		</property>
+	</bean>
+
+</beans>

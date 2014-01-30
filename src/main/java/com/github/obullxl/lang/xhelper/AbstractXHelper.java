@@ -13,6 +13,7 @@ import com.github.obullxl.lang.utils.LogUtils;
  * 
  * @author obullxl@gmail.com
  * @version $Id: AbstractXHelper.java, V1.0.1 2013年12月4日 上午9:48:45 $
+ * @deprecated 请使用{@code WebX}接口
  */
 public abstract class AbstractXHelper implements XHelper {
     /** Logger */

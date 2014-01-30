@@ -11,6 +11,7 @@ import com.github.obullxl.lang.spring.web.WebViewThemeHolder;
  * 
  * @author obullxl@gmail.com
  * @version $Id: ThemeXHelper.java, V1.0.1 2013年12月17日 下午12:30:15 $
+ * @deprecated 请使用{@code WebX}接口
  */
 public class ThemeXHelper extends AbstractXHelper {
 

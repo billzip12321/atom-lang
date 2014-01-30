@@ -15,9 +15,7 @@ import java.util.List;
 import com.github.obullxl.lang.das.AbstractDAO;
 import com.github.obullxl.lang.das.JdbcInsert;
 import com.github.obullxl.lang.das.JdbcSelect;
-import com.github.obullxl.lang.das.JdbcSelect.JdbcRowMap;
 import com.github.obullxl.lang.das.JdbcStmtValue;
-import com.github.obullxl.lang.das.JdbcStmtValue.DefaultJdbcStmtValue;
 import com.github.obullxl.lang.das.JdbcUpdate;
 
 /**
@@ -26,7 +24,7 @@ import com.github.obullxl.lang.das.JdbcUpdate;
  * @author obullxl@gmail.com
  * @version $Id: UserDAO.java, V1.0.1 2014年1月28日 上午9:57:57 $
  */
-public class UserDAO extends AbstractDAO implements JdbcRowMap {
+public class UserDAO extends AbstractDAO {
     public static final String NAME                    = "UserDAO";
 
     /** 编号 */
@@ -93,25 +91,9 @@ public class UserDAO extends AbstractDAO implements JdbcRowMap {
     private String             tableFields;
 
     /** 
-     * @see com.github.obullxl.lang.das.AbstractDAO#init()
+     * @see com.github.obullxl.lang.das.AbstractDAO#findTableFields()
      */
-    public void init() {
-        super.init();
-
-        logger.warn("[用户模型]-数据表信息:{}({},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{}).", //
-            this.tableName, this.noFieldName, this.flagFieldName, this.nickNameFieldName, this.passwdFieldName, this.passwdErrCountFieldName, //
-            this.registDateFieldName, this.activeDateFieldName, this.authDateFieldName, this.mobileFieldName, this.emailFieldName,//
-            this.realNameFieldName, this.birthDateFieldName, this.avatarPathFieldName, this.postCodeFieldName, this.provinceCodeFieldName,//
-            this.cityCodeFieldName, this.countyCodeFieldName, this.streetInfoFieldName, this.gmtCreateFieldName, this.gmtModifyFieldName);
-
-        this.tableFields = this.findTableFields();
-        logger.warn("[用户模型]-TableFields: {}", this.tableFields);
-    }
-
-    /**
-     * 获取SELECT Fields
-     */
-    private String findTableFields() {
+    public String findTableFields() {
         if (this.tableFields == null) {
             StringBuilder sql = new StringBuilder();
 
@@ -320,19 +302,6 @@ public class UserDAO extends AbstractDAO implements JdbcRowMap {
     }
 
     /**
-     * 查询所有用户模型
-     */
-    public List<UserDTO> find() {
-        // SQL
-        StringBuilder sql = new StringBuilder();
-        sql.append("SELECT ").append(this.findTableFields());
-        sql.append(" FROM ").append(this.tableName);
-
-        // 执行查询
-        return JdbcSelect.selectList(this.dataSource, sql.toString(), this, new DefaultJdbcStmtValue());
-    }
-
-    /**
      * 根据编号查询单个用户模型
      */
     public UserDTO findUnique(final String unique) {
@@ -431,17 +400,6 @@ public class UserDAO extends AbstractDAO implements JdbcRowMap {
                 stmt.setString(1, email);
             }
         });
-    }
-
-    /**
-     * 删除所有用户模型
-     */
-    public int delete() {
-        // SQL
-        String sql = "DELETE FROM " + this.tableName;
-
-        // 执行
-        return JdbcUpdate.executeUpdate(this.dataSource, sql, new DefaultJdbcStmtValue());
     }
 
     /**

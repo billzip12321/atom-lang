@@ -9,6 +9,7 @@ package com.github.obullxl.lang.xhelper;
  * 
  * @author obullxl@gmail.com
  * @version $Id: XHelper.java, V1.0.1 2013年11月25日 上午11:00:33 $
+ * @deprecated 请使用{@code WebX}接口
  */
 public interface XHelper {
 

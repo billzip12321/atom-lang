@@ -13,14 +13,10 @@ import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
 
-import com.github.obullxl.lang.topic.TopicDTO;
 import com.github.obullxl.lang.das.AbstractDAO;
 import com.github.obullxl.lang.das.JdbcInsert;
-import com.github.obullxl.lang.das.JdbcSelect;
-import com.github.obullxl.lang.das.JdbcUpdate;
-import com.github.obullxl.lang.das.JdbcSelect.JdbcRowMap;
-import com.github.obullxl.lang.das.JdbcStmtValue.DefaultJdbcStmtValue;
 import com.github.obullxl.lang.das.JdbcStmtValue;
+import com.github.obullxl.lang.das.JdbcUpdate;
 import com.github.obullxl.lang.enums.TopicTypeEnum;
 
 /**
@@ -29,7 +25,7 @@ import com.github.obullxl.lang.enums.TopicTypeEnum;
  * @author obullxl@gmail.com
  * @version $Id: TopicDAO.java, V1.0.1 2014年1月28日 下午4:23:32 $
  */
-public class TopicDAO extends AbstractDAO implements JdbcRowMap {
+public class TopicDAO extends AbstractDAO {
     public static final String NAME                   = "TopicDAO";
 
     /** ID */
@@ -102,25 +98,9 @@ public class TopicDAO extends AbstractDAO implements JdbcRowMap {
     private String             tableFields;
 
     /** 
-     * @see com.github.obullxl.lang.das.AbstractDAO#init()
+     * @see com.github.obullxl.lang.das.AbstractDAO#findTableFields()
      */
-    public void init() {
-        logger.warn("[主题模型]-数据表信息:{}({},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{}).", //
-            this.tableName, this.idFieldName, this.flagFieldName, this.catgFieldName, this.typeFieldName, //
-            this.topicFieldName, this.postUserNoFieldName, this.postNickNameFieldName, this.linkUrlFieldName, //
-            this.mediaUrlFieldName, this.gmtPostFieldName, this.visitCountFieldName, this.replyCountFieldName, //
-            this.replyUserNoFieldName, this.replyNickNameFieldName, this.gmtReplyFieldName, this.extMapFieldName, //
-            this.titleStyleFieldName, this.titleFieldName, this.summaryFieldName, this.contentFieldName, //
-            this.gmtCreateFieldName, this.gmtModifyFieldName);
-
-        this.findTableFields();
-        logger.warn("[主题模型]-TableFieds: {}", this.tableFields);
-    }
-
-    /**
-     * 获取SELECT SQL
-     */
-    private String findTableFields() {
+    public String findTableFields() {
         if (this.tableFields == null) {
             StringBuilder sql = new StringBuilder();
 
@@ -320,21 +300,21 @@ public class TopicDAO extends AbstractDAO implements JdbcRowMap {
      * 增加/减少主题浏览次数
      */
     public int detaVisitCount(final String id, final int deta) {
-        if(deta == 0) {
+        if (deta == 0) {
             return 0;
         }
-        
+
         // SQL
         StringBuilder sql = new StringBuilder();
         sql.append("UPDATE ").append(this.tableName).append(" SET ");
         sql.append(this.visitCountFieldName).append("=").append(this.visitCountFieldName);
-        
+
         if (deta > 0) {
             sql.append("+?");
         } else {
             sql.append("-?");
         }
-        
+
         sql.append(" WHERE ").append(this.idFieldName).append("=?");
 
         // 执行更新
@@ -345,26 +325,26 @@ public class TopicDAO extends AbstractDAO implements JdbcRowMap {
             }
         });
     }
-    
+
     /**
      * 增加/减少主题跟帖次数
      */
     public int detaReplyCount(final String id, final int deta) {
-        if(deta == 0) {
+        if (deta == 0) {
             return 0;
         }
-        
+
         // SQL
         StringBuilder sql = new StringBuilder();
         sql.append("UPDATE ").append(this.tableName).append(" SET ");
         sql.append(this.replyCountFieldName).append("=").append(this.replyCountFieldName);
-        
+
         if (deta > 0) {
             sql.append("+?");
         } else {
             sql.append("-?");
         }
-        
+
         sql.append(" WHERE ").append(this.idFieldName).append("=?");
 
         // 执行更新
@@ -374,30 +354,6 @@ public class TopicDAO extends AbstractDAO implements JdbcRowMap {
                 stmt.setString(2, id);
             }
         });
-    }
-
-    /**
-     * 查询所有主题模型
-     */
-    public List<TopicDTO> find() {
-        // SQL
-        StringBuilder sql = new StringBuilder();
-        sql.append("SELECT ").append(this.findTableFields());
-        sql.append(" FROM ").append(this.tableName);
-
-        // 执行查询
-        return JdbcSelect.selectList(this.dataSource, sql.toString(), this, new DefaultJdbcStmtValue());
-    }
-
-    /**
-     * 删除所有主题模型
-     */
-    public int delete() {
-        // SQL
-        String sql = "DELETE FROM " + this.tableName;
-
-        // 执行删除
-        return JdbcUpdate.executeUpdate(this.dataSource, sql, new DefaultJdbcStmtValue());
     }
 
     /**

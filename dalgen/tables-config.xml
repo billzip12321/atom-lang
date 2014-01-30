@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<tables>
+	<typemap from="java.sql.Date" to="java.util.Date" />
+	<typemap from="java.sql.Timestamp" to="java.util.Date" />
+	<typemap from="java.math.BigDecimal" to="long" />
+	<typemap from="byte" to="int" />
+	<typemap from="short" to="int" />
+    
+    <tableprefix prefix="atom" />
+    <tableprefix prefix="mplat" />
+
+    <include table="tables/atom_catg.xml" />
+    <include table="tables/atom_cfg.xml" />
+    <include table="tables/atom_user_right.xml" />
+    <include table="tables/atom_user.xml" />
+</tables>

@@ -39,8 +39,8 @@ import com.github.obullxl.lang.utils.LogUtils;
 import com.github.obullxl.lang.utils.MD5Utils;
 import com.github.obullxl.lang.utils.TextUtils;
 import com.github.obullxl.lang.web.WebContext;
-import com.github.obullxl.lang.xhelper.XHelper;
-import com.github.obullxl.lang.xhelper.XHelperUtils;
+import com.github.obullxl.lang.webx.WebX;
+import com.github.obullxl.lang.webx.WebXUtils;
 
 /**
  * Web空控制器
@@ -119,16 +119,6 @@ public class DispatcherServletExt extends DispatcherServlet {
         // 获取Velocity引擎
         this.velocityEngineFactory = context.getBean(VELOCITY_ENGINE_FACTORY_BEAN_NAME, VelocityEngineFactory.class);
         this.velocityEngine = this.velocityEngineFactory.get();
-
-        // 增加XHelper工具类
-        Map<String, XHelper> helpers = XHelperUtils.findXHelpers();
-        for (Map.Entry<String, XHelper> entry : helpers.entrySet()) {
-            String name = entry.getKey();
-            XHelper helper = entry.getValue();
-
-            this.getServletContext().setAttribute(name, helper);
-            logger.warn("Web容器注册XHelper[{}]-{}.", name, helper.getClass().getName());
-        }
     }
 
     /** 
@@ -196,6 +186,17 @@ public class DispatcherServletExt extends DispatcherServlet {
 
             // 主题
             mv.getModelMap().put(WebViewThemeHolder.THEME_KEY, WebViewThemeHolder.get());
+
+            // 增加WebX工具类
+            Map<String, WebX> xtools = WebXUtils.findAllWebX();
+            for (Map.Entry<String, WebX> entry : xtools.entrySet()) {
+                WebX webx = entry.getValue();
+                mv.getModelMap().put(entry.getKey(), entry.getValue());
+
+                if (logger.isDebugEnabled()) {
+                    logger.debug("WebX容器-{}.", webx.getClass().getName());
+                }
+            }
         }
 
         super.render(mv, request, response);

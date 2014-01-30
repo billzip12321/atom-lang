@@ -58,14 +58,14 @@ public class DefaultTopicService implements TopicService {
      * @see com.github.obullxl.lang.topic.TopicService#find()
      */
     public List<TopicDTO> find() {
-        return this.topicDAO.find();
+        return this.topicDAO.selectAll();
     }
 
     /** 
      * @see com.github.obullxl.lang.topic.TopicService#remove()
      */
     public int remove() {
-        return this.topicDAO.delete();
+        return this.topicDAO.deleteAll();
     }
 
     /** 

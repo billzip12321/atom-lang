@@ -15,3 +15,7 @@
 /.settings
 
 /logs
+
+/dalgen/logs
+/dalgen/target
+

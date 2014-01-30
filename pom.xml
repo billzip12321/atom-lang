@@ -4,7 +4,7 @@
 	<groupId>com.github.obullxl</groupId>
 	<artifactId>atom-lang</artifactId>
 	<packaging>jar</packaging>
-	<version>1.0.6</version>
+	<version>1.0.7</version>
 	<name>atom-lang</name>
 	<description>atom-lang</description>
 	<licenses>
@@ -160,6 +160,12 @@
 			<groupId>commons-beanutils</groupId>
 			<artifactId>commons-beanutils</artifactId>
 			<version>1.9.0</version>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>commons-dbutils</groupId>
+			<artifactId>commons-dbutils</artifactId>
+			<version>1.5</version>
 			<scope>provided</scope>
 		</dependency>
 

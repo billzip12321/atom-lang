@@ -13,6 +13,7 @@ import java.util.concurrent.ConcurrentMap;
  * 
  * @author obullxl@gmail.com
  * @version $Id: XHelperUtils.java, V1.0.1 2013年11月25日 上午11:29:38 $
+ * @deprecated 请使用{@code WebX}接口
  */
 public class XHelperUtils {
     /** 工具类容器 */
