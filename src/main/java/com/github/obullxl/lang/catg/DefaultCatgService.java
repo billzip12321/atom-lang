@@ -7,6 +7,7 @@ package com.github.obullxl.lang.catg;
 import java.util.Date;
 import java.util.List;
 
+import org.apache.commons.lang.StringUtils;
 import org.jsoup.helper.Validate;
 import org.slf4j.Logger;
 
@@ -76,8 +77,8 @@ public class DefaultCatgService implements TickTimer, CatgService {
         return false;
     }
 
-    /**
-     * 刷新缓存
+    /** 
+     * @see com.github.obullxl.lang.catg.CatgService#onRefresh()
      */
     public void onRefresh() {
         logger.warn("[模块分类]-开始刷新模块分类缓存......");
@@ -92,36 +93,77 @@ public class DefaultCatgService implements TickTimer, CatgService {
         }
     }
 
-    /**
-     * 新增模块分类
+    /** 
+     * @see com.github.obullxl.lang.catg.CatgService#find(java.lang.String)
+     */
+    public CatgDTO find(String code) {
+        return this.catgDAO.find(code);
+    }
+
+    /** 
+     * @see com.github.obullxl.lang.catg.CatgService#create(com.github.obullxl.lang.catg.CatgDTO)
      */
     public void create(CatgDTO catg) {
         this.catgDAO.insert(catg);
         this.onRefresh();
     }
 
-    /**
-     * 更新模块分类
+    /** 
+     * @see com.github.obullxl.lang.catg.CatgService#update(com.github.obullxl.lang.catg.CatgDTO)
      */
-    public void update(CatgDTO catg) {
-        this.catgDAO.update(catg);
-        this.onRefresh();
+    public int update(CatgDTO catg) {
+        int cnt = this.catgDAO.update(catg);
+
+        CatgDTO exist = CatgUtils.find(catg.getCode());
+        if (StringUtils.equals(exist.getCatg(), catg.getCatg())) {
+            // 结构未改变，无需重新加载
+            CatgUtils.merge(exist, catg);
+        } else {
+            // 结构发送变化，需重新加载
+            this.onRefresh();
+        }
+
+        return cnt;
     }
 
-    /**
-     * 删除模块分类
+    /** 
+     * @see com.github.obullxl.lang.catg.CatgService#remove()
      */
-    public void remove() {
-        this.catgDAO.deleteAll();
+    public int remove() {
+        int cnt = this.catgDAO.deleteAll();
         CatgUtils.remove();
+
+        return cnt;
     }
 
-    /**
-     * 删除模块分类
+    /** 
+     * @see com.github.obullxl.lang.catg.CatgService#remove(java.lang.String)
      */
-    public void remove(String code) {
-        this.catgDAO.delete(code);
+    public int remove(String code) {
+        int cnt = this.catgDAO.delete(code);
         this.onRefresh();
+
+        return cnt;
+    }
+
+    /** 
+     * @see com.github.obullxl.lang.catg.CatgService#removeByCatg(java.lang.String)
+     */
+    public int removeByCatg(String catg) {
+        int cnt = this.catgDAO.deleteByCatg(catg);
+        this.onRefresh();
+
+        return cnt;
+    }
+
+    /** 
+     * @see com.github.obullxl.lang.catg.CatgService#remove(java.lang.String, java.lang.String)
+     */
+    public int remove(String catg, String code) {
+        int cnt = this.catgDAO.delete(catg, code);
+        this.onRefresh();
+
+        return cnt;
     }
 
     // ~~~~~~~~~~~~ 依赖注入 ~~~~~~~~~~~~ //

@@ -4,6 +4,8 @@
  */
 package com.github.obullxl.lang.cfg;
 
+import java.util.List;
+
 import org.slf4j.Logger;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
@@ -24,12 +26,11 @@ public class CfgServiceTestMain {
             "classpath:/how-to-use/cfg-spring.xml",//
             "classpath:/spring/tick-timer-config.xml");
         
+        // 系统参数
         CfgService cfgService = actxt.getBean(CfgService.class);
 
-        // 1.清理
         cfgService.remove();
 
-        // 1.创建
         CfgDTO cfg = new CfgDTO();
         cfg.setCatg("system");
         cfg.setName("test01");
@@ -38,6 +39,20 @@ public class CfgServiceTestMain {
         cfg.setValueExt("test-value-ext-01");
 
         cfgService.create(cfg);
+        
+        
+        // 权限模型
+        RightService rgtService = actxt.getBean(RightService.class);
+        rgtService.remove();
+
+        RightDTO right = new RightDTO();
+        right.setCode("right-code-test");
+        right.setName("测试权限名称");
+
+        rgtService.create(right);
+
+        List<RightDTO> cfgs = RightUtils.find();
+        logger.warn("RightService#find(): {}", cfgs);
     }
 
 }

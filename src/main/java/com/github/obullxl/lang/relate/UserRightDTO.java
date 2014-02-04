@@ -2,7 +2,7 @@
  * Author: obullxl@gmail.com
  * Copyright (c) 2004-2014 All Rights Reserved.
  */
-package com.github.obullxl.lang.right;
+package com.github.obullxl.lang.relate;
 
 import com.github.obullxl.lang.biz.BaseDTO;
 

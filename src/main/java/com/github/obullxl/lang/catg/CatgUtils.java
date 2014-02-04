@@ -12,6 +12,8 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
+import org.apache.commons.lang.StringUtils;
+
 /**
  * 模块分类工具类
  * 
@@ -78,6 +80,19 @@ public class CatgUtils {
     }
 
     /**
+     * 查询模块分类
+     */
+    public static final CatgDTO find(String catg, String code) {
+        CatgDTO item = cache.get(code);
+
+        if (item != null && StringUtils.equals(catg, item.getCatg())) {
+            return item;
+        }
+
+        return null;
+    }
+
+    /**
      * 检测是否有下属分类
      */
     public static final boolean hasBranch(String code) {
@@ -105,6 +120,24 @@ public class CatgUtils {
         dst.setGmtModify(src.getGmtModify());
 
         return dst;
+    }
+
+    /**
+     * 合并分类基本信息
+     */
+    public static final void merge(CatgDTO dst, CatgDTO src) {
+        if (dst == null || src == null) {
+            return;
+        }
+
+        dst.setCatg(src.getCatg());
+        dst.setCode(src.getCode());
+        dst.setSort(src.getSort());
+        dst.setTitle(src.getTitle());
+        dst.setExtMap(src.getExtMap());
+        dst.setSummary(src.getSummary());
+        dst.setGmtCreate(src.getGmtCreate());
+        dst.setGmtModify(src.getGmtModify());
     }
 
     /**

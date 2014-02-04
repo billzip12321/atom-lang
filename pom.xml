@@ -4,7 +4,7 @@
 	<groupId>com.github.obullxl</groupId>
 	<artifactId>atom-lang</artifactId>
 	<packaging>jar</packaging>
-	<version>1.0.7</version>
+	<version>1.0.8</version>
 	<name>atom-lang</name>
 	<description>atom-lang</description>
 	<licenses>
@@ -214,6 +214,13 @@
 			<version>3.7.15-M1</version>
 			<scope>test</scope>
 		</dependency>
+		<dependency>
+			<groupId>org.jooq</groupId>
+			<artifactId>jooq</artifactId>
+			<version>3.2.2</version>
+			<scope>test</scope>
+		</dependency>
+
 
 		<!-- ======================================== -->
 		<!-- JUnit测试依赖 -->

@@ -12,6 +12,7 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;
@@ -100,6 +101,8 @@ public class DispatcherServletExt extends DispatcherServlet {
         config.getServletContext().setAttribute(FilenameUtils.class.getSimpleName(), new FilenameUtils());
         config.getServletContext().setAttribute(BooleanUtils.class.getSimpleName(), new BooleanUtils());
 
+        config.getServletContext().setAttribute(CollectionUtils.class.getSimpleName(), new CollectionUtils());
+
         // 系统参数
         Map<String, String> cfgs = ConfigFactory.get().getConfig();
         for (Map.Entry<String, String> cfg : cfgs.entrySet()) {
@@ -161,14 +164,24 @@ public class DispatcherServletExt extends DispatcherServlet {
         }
 
         uri = StringUtils.substringBeforeLast(uri, ".");
+
+        // 直接展示视图
         if (this.velocityEngine.resourceExists(uri + ".vm")) {
-            // 直接展示视图
             this.render(new ModelAndView(uri), request, response);
-        } else if (this.velocityEngine.resourceExists("/" + WebViewThemeHolder.get() + uri + ".vm")) {
-            // 直接展示视图(带主题)
+        }
+
+        // 直接展示主页(home)
+        else if (this.velocityEngine.resourceExists("/home" + uri + ".vm")) {
+            this.render(new ModelAndView("/home" + uri), request, response);
+        }
+
+        // 直接展示视图(带主题)
+        else if (this.velocityEngine.resourceExists("/" + WebViewThemeHolder.get() + uri + ".vm")) {
             this.render(new ModelAndView("/" + WebViewThemeHolder.get() + uri), request, response);
-        } else {
-            // 处理器没有找到错误
+        }
+
+        // 处理器没有找到错误
+        else {
             super.noHandlerFound(request, response);
         }
     }

@@ -8,6 +8,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import com.github.obullxl.lang.das.AbstractDAO;
@@ -95,13 +96,13 @@ public class CfgDAO extends AbstractDAO {
                 stmt.setString(5, cfg.getValueExt());
 
                 if (cfg.getGmtCreate() == null) {
-                    stmt.setTimestamp(6, null);
+                    stmt.setTimestamp(6, new Timestamp(new Date().getTime()));
                 } else {
                     stmt.setTimestamp(6, new Timestamp(cfg.getGmtCreate().getTime()));
                 }
 
                 if (cfg.getGmtModify() == null) {
-                    stmt.setTimestamp(7, null);
+                    stmt.setTimestamp(7, new Timestamp(new Date().getTime()));
                 } else {
                     stmt.setTimestamp(7, new Timestamp(cfg.getGmtModify().getTime()));
                 }
@@ -138,7 +139,7 @@ public class CfgDAO extends AbstractDAO {
                 stmt.setString(3, cfg.getValueExt());
 
                 if (cfg.getGmtModify() == null) {
-                    stmt.setTimestamp(4, null);
+                    stmt.setTimestamp(4, new Timestamp(new Date().getTime()));
                 } else {
                     stmt.setTimestamp(4, new Timestamp(cfg.getGmtModify().getTime()));
                 }

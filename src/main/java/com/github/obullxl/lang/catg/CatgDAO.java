@@ -13,6 +13,7 @@ import java.util.List;
 
 import com.github.obullxl.lang.das.AbstractDAO;
 import com.github.obullxl.lang.das.JdbcInsert;
+import com.github.obullxl.lang.das.JdbcSelect;
 import com.github.obullxl.lang.das.JdbcStmtValue;
 import com.github.obullxl.lang.das.JdbcUpdate;
 
@@ -159,6 +160,22 @@ public class CatgDAO extends AbstractDAO {
             }
         });
     }
+    
+    /**
+     * 根据代码查询模块分类
+     */
+    public CatgDTO find(final String code) {
+        StringBuilder sql = new StringBuilder();
+        sql.append("SELECT ").append(this.findTableFields());
+        sql.append(" FROM ").append(this.tableName);
+        sql.append(" WHERE ").append(this.codeFieldName).append("=?");
+
+        return JdbcSelect.selectOne(this.dataSource, sql.toString(), this, new JdbcStmtValue() {
+            public void set(PreparedStatement stmt) throws SQLException {
+                stmt.setString(1, code);
+            }
+        });
+    }
 
     /**
      * 根据代码删除模块分类
@@ -186,6 +203,25 @@ public class CatgDAO extends AbstractDAO {
         return JdbcUpdate.executeUpdate(this.dataSource, sql, new JdbcStmtValue() {
             public void set(PreparedStatement stmt) throws SQLException {
                 stmt.setString(1, catg);
+            }
+        });
+    }
+
+    /**
+     * 根据分类+代码删除模块分类
+     */
+    public int delete(final String catg, final String code) {
+        // SQL
+        StringBuilder sql = new StringBuilder();
+        sql.append("DELETE FROM ").append(this.tableName);
+        sql.append(" WHERE ").append(this.catgFieldName).append("=?");
+        sql.append(" AND ").append(this.codeFieldName).append("=?");
+
+        // 执行删除
+        return JdbcUpdate.executeUpdate(this.dataSource, sql.toString(), new JdbcStmtValue() {
+            public void set(PreparedStatement stmt) throws SQLException {
+                stmt.setString(1, catg);
+                stmt.setString(2, code);
             }
         });
     }

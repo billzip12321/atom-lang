@@ -2,11 +2,11 @@
 <beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd" default-autowire="byName">
 
 	<!-- ===================================== -->
-	<!-- 系统参数服务配置 -->
+	<!-- 关系模型服务配置 -->
 	<!-- ===================================== -->
-	<bean id="cfgService" class="com.github.obullxl.lang.cfg.DefaultCfgService" init-method="init">
-		<property name="cfgDAO">
-			<bean class="com.github.obullxl.lang.cfg.CfgDAO" init-method="init">
+	<bean id="relateService" class="com.github.obullxl.lang.relate.DefaultRelateService" init-method="init">
+		<property name="relateDAO">
+			<bean class="com.github.obullxl.lang.relate.RelateDAO" init-method="init">
 				<property name="dataSource">
 					<bean class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close">
 						<property name="driverClassName" value="com.mysql.jdbc.Driver" />
@@ -18,12 +18,13 @@
 						<property name="maxActive" value="3" />
 					</bean>
 				</property>
-				<property name="tableName" value="atom_cfg" />
+				<property name="tableName" value="atom_relate" />
 				<property name="catgFieldName" value="catg" />
-				<property name="nameFieldName" value="name" />
-				<property name="titleFieldName" value="title" />
-				<property name="valueFieldName" value="value" />
-				<property name="valueExtFieldName" value="value_ext" />
+				<property name="srcNoFieldName" value="src_no" />
+				<property name="srcNameFieldName" value="src_name" />
+				<property name="dstNoFieldName" value="dst_no" />
+				<property name="dstNameFieldName" value="dst_name" />
+				<property name="extMapFieldName" value="ext_map" />
 				<property name="gmtCreateFieldName" value="gmt_create" />
 				<property name="gmtModifyFieldName" value="gmt_modify" />
 			</bean>
@@ -31,10 +32,17 @@
 	</bean>
 
 	<!-- ===================================== -->
-	<!-- 权限模型服务配置 -->
+	<!-- 论坛管理员模型服务配置 -->
 	<!-- ===================================== -->
-	<bean id="rightService" class="com.github.obullxl.lang.cfg.DefaultRightService" init-method="init">
-		<property name="cfgService" ref="cfgService" />
+	<bean id="forumUserService" class="com.github.obullxl.lang.relate.DefaultForumUserService" init-method="init">
+		<property name="relateService" ref="relateService" />
+	</bean>
+	
+	<!-- ===================================== -->
+	<!-- 用户权限模型服务配置 -->
+	<!-- ===================================== -->
+	<bean id="userRightService" class="com.github.obullxl.lang.relate.DefaultUserRightService" init-method="init">
+		<property name="relateService" ref="relateService" />
 	</bean>
 
 </beans>

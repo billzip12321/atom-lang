@@ -4,7 +4,6 @@
  */
 package com.github.obullxl.lang.catg;
 
-
 /**
  * 模块分类服务
  * 
@@ -19,6 +18,11 @@ public interface CatgService {
     public void onRefresh();
 
     /**
+     * 查询单个分类
+     */
+    public CatgDTO find(String code);
+
+    /**
      * 新增模块分类
      */
     public void create(CatgDTO catg);
@@ -26,16 +30,26 @@ public interface CatgService {
     /**
      * 更新模块分类
      */
-    public void update(CatgDTO catg);
+    public int update(CatgDTO catg);
 
     /**
      * 删除模块分类
      */
-    public void remove();
+    public int remove();
 
     /**
-     * 删除模块分类
+     * 根据代码删除模块分类
      */
-    public void remove(String code);
+    public int remove(String code);
+
+    /**
+     * 根据分类删除模块分类
+     */
+    public int removeByCatg(String catg);
+
+    /**
+     * 根据分类+代码删除模块分类
+     */
+    public int remove(String catg, String code);
 
 }

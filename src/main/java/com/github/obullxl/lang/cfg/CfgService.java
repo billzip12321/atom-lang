@@ -4,7 +4,6 @@
  */
 package com.github.obullxl.lang.cfg;
 
-
 /**
  * 系统参数服务
  * 
@@ -26,21 +25,21 @@ public interface CfgService {
     /**
      * 更新系统参数
      */
-    public void update(CfgDTO cfg);
+    public int update(CfgDTO cfg);
 
     /**
      * 删除系统参数
      */
-    public void remove();
+    public int remove();
 
     /**
      * 删除系统参数
      */
-    public void remove(String catg);
+    public int remove(String catg);
 
     /**
      * 删除系统参数
      */
-    public void remove(String catg, String name);
+    public int remove(String catg, String name);
 
 }

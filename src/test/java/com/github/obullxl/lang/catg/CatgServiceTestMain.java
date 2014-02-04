@@ -4,6 +4,8 @@
  */
 package com.github.obullxl.lang.catg;
 
+import java.util.List;
+
 import org.slf4j.Logger;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
@@ -24,12 +26,12 @@ public class CatgServiceTestMain {
             "classpath:/how-to-use/catg-spring.xml",//
             "classpath:/spring/tick-timer-config.xml");
 
+        // 分类模型
+        /*
         CatgService catgService = actxt.getBean(CatgService.class);
 
-        // 1.清理
         catgService.remove();
 
-        // 1.创建
         CatgDTO catg = new CatgDTO();
         catg.setCatg("system");
         catg.setCode("test01");
@@ -39,6 +41,32 @@ public class CatgServiceTestMain {
         catg.setSummary("test-summary-01");
 
         catgService.create(catg);
+        */
+
+        // 论坛模型
+        ForumService forumService = actxt.getBean(ForumService.class);
+
+        forumService.remove();
+
+        for (int i = 1; i <= 10; i++) {
+            ForumDTO forum = new ForumDTO();
+            forum.setCatg("system-" + i);
+            forum.setCode("test-forum-" + i);
+            forum.setSort("000" + i);
+            forum.setTitle("安众贷测试论坛标题-" + i);
+            // forum.setExtMap("key1=value1|key2=value2");
+            forum.setSummary("安众贷测试论坛描述-" + i + "论坛的发展也如同网络雨后春笋般的出现，并迅速的发展壮大。论坛几乎涵盖了人们生活的各个方面，几乎每一个人都可以找到自己感兴趣或者需要了解的专题性论坛，而各类网站，综合性门户网站或者功能性专题网站也都青睐于开设自己的论坛，以促进网友之间的交流，增加互动性和丰富网站的内容。");
+
+            forum.setTotalPost(10);
+            forum.setTotalReply(20);
+            forum.setTodayPost(5);
+            forum.setTodayReply(10);
+
+            forumService.create(forum);
+        }
+
+        List<ForumDTO> forums = ForumUtils.find();
+        logger.warn("ForumService#find(): {}", forums);
     }
 
 }

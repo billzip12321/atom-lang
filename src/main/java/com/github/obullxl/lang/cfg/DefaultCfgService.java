@@ -76,8 +76,8 @@ public class DefaultCfgService implements TickTimer, CfgService {
         return false;
     }
 
-    /**
-     * 刷新缓存
+    /** 
+     * @see com.github.obullxl.lang.cfg.CfgService#onRefresh()
      */
     public void onRefresh() {
         logger.warn("[系统参数]-开始刷新系统参数缓存......");
@@ -95,44 +95,52 @@ public class DefaultCfgService implements TickTimer, CfgService {
         }
     }
 
-    /**
-     * 新增系统参数
+    /** 
+     * @see com.github.obullxl.lang.cfg.CfgService#create(com.github.obullxl.lang.cfg.CfgDTO)
      */
     public void create(CfgDTO cfg) {
         this.cfgDAO.insert(cfg);
         CfgUtils.updateCache(cfg);
     }
 
-    /**
-     * 更新系统参数
+    /** 
+     * @see com.github.obullxl.lang.cfg.CfgService#update(com.github.obullxl.lang.cfg.CfgDTO)
      */
-    public void update(CfgDTO cfg) {
-        this.cfgDAO.update(cfg);
+    public int update(CfgDTO cfg) {
+        int cnt = this.cfgDAO.update(cfg);
         CfgUtils.updateCache(cfg);
+
+        return cnt;
     }
 
-    /**
-     * 删除系统参数
+    /** 
+     * @see com.github.obullxl.lang.cfg.CfgService#remove()
      */
-    public void remove() {
-        this.cfgDAO.delete();
+    public int remove() {
+        int cnt = this.cfgDAO.delete();
         CfgUtils.removeCache();
+
+        return cnt;
     }
 
-    /**
-     * 删除系统参数
+    /** 
+     * @see com.github.obullxl.lang.cfg.CfgService#remove(java.lang.String)
      */
-    public void remove(String catg) {
-        this.cfgDAO.delete(catg);
+    public int remove(String catg) {
+        int cnt = this.cfgDAO.delete(catg);
         CfgUtils.removeCache(catg);
+
+        return cnt;
     }
 
-    /**
-     * 删除系统参数
+    /** 
+     * @see com.github.obullxl.lang.cfg.CfgService#remove(java.lang.String, java.lang.String)
      */
-    public void remove(String catg, String name) {
-        this.cfgDAO.delete(catg, name);
+    public int remove(String catg, String name) {
+        int cnt = this.cfgDAO.delete(catg, name);
         CfgUtils.removeCache(catg, name);
+
+        return cnt;
     }
 
     // ~~~~~~~~~~~~ 依赖注入 ~~~~~~~~~~~~ //

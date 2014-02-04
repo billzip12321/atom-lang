@@ -18,7 +18,7 @@
 						<property name="maxActive" value="3" />
 					</bean>
 				</property>
-				<property name="tableName" value="atom_catg2" />
+				<property name="tableName" value="atom_catg" />
 				<property name="catgFieldName" value="catg" />
 				<property name="codeFieldName" value="code" />
 				<property name="sortFieldName" value="sort" />
@@ -29,6 +29,13 @@
 				<property name="gmtModifyFieldName" value="gmt_modify" />
 			</bean>
 		</property>
+	</bean>
+	
+	<!-- ===================================== -->
+	<!-- 论坛模型服务配置 -->
+	<!-- ===================================== -->
+	<bean id="forumService" class="com.github.obullxl.lang.catg.DefaultForumService" init-method="init">
+		<property name="catgService" ref="catgService" />
 	</bean>
 
 </beans>
