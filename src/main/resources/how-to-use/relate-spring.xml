@@ -4,9 +4,9 @@
 	<!-- ===================================== -->
 	<!-- 关系模型服务配置 -->
 	<!-- ===================================== -->
-	<bean id="relateService" class="com.github.obullxl.lang.relate.DefaultRelateService" init-method="init">
+	<bean id="relateService" class="com.github.obullxl.model.relate.service.impl.RelateServiceImpl" init-method="init">
 		<property name="relateDAO">
-			<bean class="com.github.obullxl.lang.relate.RelateDAO" init-method="init">
+			<bean class="com.github.obullxl.model.relate.dao.impl.DefaultRelateDAO" init-method="init">
 				<property name="dataSource">
 					<bean class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close">
 						<property name="driverClassName" value="com.mysql.jdbc.Driver" />
@@ -19,6 +19,9 @@
 					</bean>
 				</property>
 				<property name="tableName" value="atom_relate" />
+				<property name="createTableSQL">
+					<value>classpath:/model-sql/relate-MySQL.sql</value>
+				</property>
 				<property name="catgFieldName" value="catg" />
 				<property name="srcNoFieldName" value="src_no" />
 				<property name="srcNameFieldName" value="src_name" />
@@ -34,14 +37,14 @@
 	<!-- ===================================== -->
 	<!-- 论坛管理员模型服务配置 -->
 	<!-- ===================================== -->
-	<bean id="forumUserService" class="com.github.obullxl.lang.relate.DefaultForumUserService" init-method="init">
+	<bean id="forumUserService" class="com.github.obullxl.model.relate.service.impl.ForumUserServiceImpl" init-method="init">
 		<property name="relateService" ref="relateService" />
 	</bean>
 	
 	<!-- ===================================== -->
 	<!-- 用户权限模型服务配置 -->
 	<!-- ===================================== -->
-	<bean id="userRightService" class="com.github.obullxl.lang.relate.DefaultUserRightService" init-method="init">
+	<bean id="userRightService" class="com.github.obullxl.model.relate.service.impl.UserRightServiceImpl" init-method="init">
 		<property name="relateService" ref="relateService" />
 	</bean>
 

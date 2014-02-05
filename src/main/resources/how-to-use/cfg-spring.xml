@@ -4,9 +4,9 @@
 	<!-- ===================================== -->
 	<!-- 系统参数服务配置 -->
 	<!-- ===================================== -->
-	<bean id="cfgService" class="com.github.obullxl.lang.cfg.DefaultCfgService" init-method="init">
+	<bean id="cfgService" class="com.github.obullxl.model.cfg.service.impl.CfgServiceImpl" init-method="init">
 		<property name="cfgDAO">
-			<bean class="com.github.obullxl.lang.cfg.CfgDAO" init-method="init">
+			<bean class="com.github.obullxl.model.cfg.dao.impl.DefaultCfgDAO" init-method="init">
 				<property name="dataSource">
 					<bean class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close">
 						<property name="driverClassName" value="com.mysql.jdbc.Driver" />
@@ -33,7 +33,7 @@
 	<!-- ===================================== -->
 	<!-- 权限模型服务配置 -->
 	<!-- ===================================== -->
-	<bean id="rightService" class="com.github.obullxl.lang.cfg.DefaultRightService" init-method="init">
+	<bean id="rightService" class="com.github.obullxl.model.cfg.service.impl.RightServiceImpl" init-method="init">
 		<property name="cfgService" ref="cfgService" />
 	</bean>
 

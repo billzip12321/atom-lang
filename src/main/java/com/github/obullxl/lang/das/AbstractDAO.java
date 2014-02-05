@@ -6,15 +6,20 @@ package com.github.obullxl.lang.das;
 
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.sql.Timestamp;
+import java.util.Date;
 import java.util.List;
 
 import javax.sql.DataSource;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.Validate;
 import org.slf4j.Logger;
+import org.springframework.core.io.Resource;
 
 import com.github.obullxl.lang.das.JdbcSelect.JdbcRowMap;
 import com.github.obullxl.lang.das.JdbcStmtValue.DefaultJdbcStmtValue;
+import com.github.obullxl.lang.enums.EnumBase;
 import com.github.obullxl.lang.utils.LogUtils;
 
 /**
@@ -33,6 +38,9 @@ public abstract class AbstractDAO implements JdbcRowMap {
     /** 参数数据表 */
     protected String              tableName;
 
+    /** 创建数据表SQL */
+    protected Resource            createTableSQL;
+
     /** CreateTime */
     protected String              gmtCreateFieldName = "gmt_create";
 
@@ -46,14 +54,58 @@ public abstract class AbstractDAO implements JdbcRowMap {
         Validate.notNull(this.dataSource, "[模型DAO]-数据源注入失败!");
         Validate.notNull(this.tableName, "[模型DAO]-数据表名没有设置!");
 
+        // 初始化数据表
+        this.createTable();
+
         logger.warn("[{}]-数据表信息:{}({}).", //
             this.getClass().getSimpleName(), this.tableName, this.findTableFields());
     }
 
     /**
+     * 获取数据插入SQL
+     */
+    public abstract String findInsertSQL();
+
+    /**
+     * 获取数据更新SQL
+     */
+    public abstract String findUpdateSQL();
+
+    /**
      * 获取所有数据表字段
      */
     public abstract String findTableFields();
+
+    /**
+     * 填充时间戳值
+     */
+    public void fillStmtTimestampValue(int idx, PreparedStatement stmt, Date date) throws SQLException {
+        if (date == null) {
+            date = new Date();
+        }
+
+        stmt.setTimestamp(idx, new Timestamp(date.getTime()));
+    }
+
+    /**
+     * 填充枚举值
+     */
+    public void fillStmtEnumBaseValue(int idx, PreparedStatement stmt, EnumBase enm) throws SQLException {
+        if (enm != null) {
+            stmt.setString(idx, enm.code());
+        } else {
+            stmt.setString(idx, StringUtils.EMPTY);
+        }
+    }
+
+    /**
+     * 初始化数据表
+     */
+    public void createTable() {
+        if(this.createTableSQL == null || !this.createTableSQL.exists()) {
+            // TODO:
+        }
+    }
 
     /**
      * 查询所有数据表记录
@@ -137,6 +189,10 @@ public abstract class AbstractDAO implements JdbcRowMap {
 
     public void setTableName(String tableName) {
         this.tableName = tableName;
+    }
+
+    public void setCreateTableSQL(Resource createTableSQL) {
+        this.createTableSQL = createTableSQL;
     }
 
     public void setGmtCreateFieldName(String gmtCreateFieldName) {

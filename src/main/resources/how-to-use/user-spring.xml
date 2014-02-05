@@ -4,9 +4,9 @@
 	<!-- ===================================== -->
 	<!-- 用户模型服务配置 -->
 	<!-- ===================================== -->
-	<bean id="userService" class="com.github.obullxl.lang.user.DefaultUserService" init-method="init">
+	<bean id="userService" class="com.github.obullxl.model.user.service.impl.UserServiceImpl" init-method="init">
 		<property name="userDAO">
-			<bean class="com.github.obullxl.lang.user.UserDAO" init-method="init">
+			<bean class="com.github.obullxl.model.user.dao.impl.DefaultUserDAO" init-method="init">
 				<property name="dataSource">
 					<bean class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close">
 						<property name="driverClassName" value="com.mysql.jdbc.Driver" />
@@ -20,8 +20,13 @@
 				</property>
 				<property name="tableName" value="atom_user" />
 				<property name="noFieldName" value="no" />
-				<property name="flagFieldName" value="flag" />
 				<property name="nickNameFieldName" value="nick_name" />
+				<property name="stateFieldName" value="state" />
+				<property name="mngtFieldName" value="mngt" />
+				<property name="sexFieldName" value="sex" />
+				<property name="loginStateFieldName" value="login_state" />
+				<property name="emailStateFieldName" value="email_state" />
+				<property name="mobileStateFieldName" value="mobile_state" />
 				<property name="passwdFieldName" value="passwd" />
 				<property name="passwdErrCountFieldName" value="passwd_err_count" />
 				<property name="registDateFieldName" value="regist_date" />

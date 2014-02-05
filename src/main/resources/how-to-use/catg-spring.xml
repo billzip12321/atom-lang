@@ -4,9 +4,9 @@
 	<!-- ===================================== -->
 	<!-- 模块分类服务配置 -->
 	<!-- ===================================== -->
-	<bean id="catgService" class="com.github.obullxl.lang.catg.DefaultCatgService" init-method="init">
+	<bean id="catgService" class="com.github.obullxl.model.catg.service.impl.CatgServiceImpl" init-method="init">
 		<property name="catgDAO">
-			<bean class="com.github.obullxl.lang.catg.CatgDAO" init-method="init">
+			<bean class="com.github.obullxl.model.catg.dao.impl.DefaultCatgDAO" init-method="init">
 				<property name="dataSource">
 					<bean class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close">
 						<property name="driverClassName" value="com.mysql.jdbc.Driver" />
@@ -34,7 +34,7 @@
 	<!-- ===================================== -->
 	<!-- 论坛模型服务配置 -->
 	<!-- ===================================== -->
-	<bean id="forumService" class="com.github.obullxl.lang.catg.DefaultForumService" init-method="init">
+	<bean id="forumService" class="com.github.obullxl.model.catg.service.impl.ForumServiceImpl" init-method="init">
 		<property name="catgService" ref="catgService" />
 	</bean>
 

@@ -4,9 +4,9 @@
 	<!-- ===================================== -->
 	<!-- 主题模型服务配置 -->
 	<!-- ===================================== -->
-	<bean id="topicService" class="com.github.obullxl.lang.topic.DefaultTopicService" init-method="init">
+	<bean id="topicService" class="com.github.obullxl.model.topic.service.impl.TopicServiceImpl" init-method="init">
 		<property name="topicDAO">
-			<bean class="com.github.obullxl.lang.topic.TopicDAO" init-method="init">
+			<bean class="com.github.obullxl.model.topic.dao.impl.DefaultTopicDAO" init-method="init">
 				<property name="dataSource">
 					<bean class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close">
 						<property name="driverClassName" value="com.mysql.jdbc.Driver" />
@@ -20,14 +20,20 @@
 				</property>
 				<property name="tableName" value="atom_topic" />
 				<property name="idFieldName" value="id" />
-				<property name="flagFieldName" value="flag" />
+				<property name="modelFieldName" value="model" />
+				<property name="stateFieldName" value="state" />
+				<property name="topFieldName" value="top" />
+				<property name="eliteFieldName" value="elite" />
+				<property name="originalFieldName" value="original" />
+				<property name="mediaFieldName" value="media" />
+				<property name="replyFieldName" value="reply" />
 				<property name="catgFieldName" value="catg" />
-				<property name="typeFieldName" value="type" />
+				<property name="sortFieldName" value="sort" />
 				<property name="topicFieldName" value="topic" />
-				<property name="postUserNoFieldName" value="post_user_no" />
-				<property name="postNickNameFieldName" value="post_nick_name" />
 				<property name="linkUrlFieldName" value="link_url" />
 				<property name="mediaUrlFieldName" value="media_url" />
+				<property name="postUserNoFieldName" value="post_user_no" />
+				<property name="postNickNameFieldName" value="post_nick_name" />
 				<property name="gmtPostFieldName" value="gmt_post" />
 				<property name="visitCountFieldName" value="visit_count" />
 				<property name="replyCountFieldName" value="reply_count" />

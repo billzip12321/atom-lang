@@ -30,11 +30,11 @@ public class UserServiceTestMain {
 
         UserService service = actxt.getBean(UserService.class);
 
-        List<UserDTO> users = service.find();
+        List<UserModel> users = service.find();
         logger.warn("UserService#find(): {}", users);
 
         String unique = "老牛啊";
-        UserDTO user = service.findUnique(unique);
+        UserModel user = service.findUnique(unique);
         logger.warn("UserService#findUnique('{}'): {}", unique, user);
         
         String no = "0001";
