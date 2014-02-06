@@ -8,44 +8,31 @@ import java.util.Map;
 
 import org.apache.commons.lang.StringUtils;
 
-import com.github.obullxl.lang.enums.EnumBase;
-
 /**
- * 布尔开关枚举值
+ * 排序方式
  * 
  * @author obullxl@gmail.com
- * @version $Id: ValveBoolEnum.java, V1.0.1 2014年1月1日 下午7:17:15 $
+ * @version $Id: OrderbyEnum.java, V1.0.1 2014年2月6日 下午3:07:09 $
  */
-public enum ValveBoolEnum implements EnumBase {
+public enum OrderbyEnum implements EnumBase {
     //
-    TRUE(1, "1", "是"),
+    ASC("升序"),
     //
-    FALSE(2, "0", "否"),
+    DESC("降序"),
     //
     ;
 
-    private final int    id;
-    private final String code;
     private final String desp;
 
-    private ValveBoolEnum(int id, String code, String desp) {
-        this.id = id;
-        this.code = code;
+    private OrderbyEnum(String desp) {
         this.desp = desp;
-    }
-
-    /**
-     * 布尔值
-     */
-    public static final boolean is(String code) {
-        return findDefault(code).is();
     }
 
     /**
      * 初始状态
      */
-    public static final ValveBoolEnum findDefault() {
-        return FALSE;
+    public static final OrderbyEnum findDefault() {
+        return DESC;
     }
 
     /**
@@ -58,8 +45,8 @@ public enum ValveBoolEnum implements EnumBase {
     /**
      * 根据代码获取枚举
      */
-    public static final ValveBoolEnum findDefault(String code) {
-        for (ValveBoolEnum enm : values()) {
+    public static final OrderbyEnum findDefault(String code) {
+        for (OrderbyEnum enm : values()) {
             if (StringUtils.equalsIgnoreCase(enm.code(), code)) {
                 return enm;
             }
@@ -68,25 +55,18 @@ public enum ValveBoolEnum implements EnumBase {
         return findDefault();
     }
 
-    /**
-     * 是否为真
-     */
-    public boolean is() {
-        return (this == TRUE);
-    }
-
     /** 
      * @see com.github.obullxl.lang.enums.EnumBase#id()
      */
     public int id() {
-        return this.id;
+        return this.ordinal();
     }
 
     /** 
      * @see com.github.obullxl.lang.enums.EnumBase#code()
      */
     public String code() {
-        return this.code;
+        return this.name();
     }
 
     /** 
@@ -95,5 +75,4 @@ public enum ValveBoolEnum implements EnumBase {
     public String desp() {
         return this.desp;
     }
-
 }

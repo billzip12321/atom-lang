@@ -38,7 +38,7 @@ public class CatgUtils {
         }
 
         for (CatgModel dto : catgs) {
-            String catg = dto.getCatg();
+            String catg = StringUtils.trimToEmpty(dto.getCatg());
             CatgModel parent = cache.get(catg);
 
             if (parent != null) {

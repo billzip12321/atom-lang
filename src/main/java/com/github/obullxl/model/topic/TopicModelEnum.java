@@ -12,7 +12,7 @@ import com.github.obullxl.lang.enums.EnumBase;
 import com.github.obullxl.lang.enums.EnumBaseUtils;
 
 /**
- * 主题类型类型
+ * 主题模型类型
  * 
  * @author obullxl@gmail.com
  * @version $Id: TopicTypeEnum.java, V1.0.1 2014年1月1日 下午4:56:18 $

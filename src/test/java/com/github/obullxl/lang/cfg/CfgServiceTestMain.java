@@ -11,6 +11,11 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 import com.github.obullxl.lang.utils.LogUtils;
+import com.github.obullxl.model.cfg.CfgModel;
+import com.github.obullxl.model.cfg.right.RightModel;
+import com.github.obullxl.model.cfg.right.RightUtils;
+import com.github.obullxl.model.cfg.service.CfgService;
+import com.github.obullxl.model.cfg.service.RightService;
 
 /**
  * 系统参数服务测试主类
@@ -31,7 +36,7 @@ public class CfgServiceTestMain {
 
         cfgService.remove();
 
-        CfgDTO cfg = new CfgDTO();
+        CfgModel cfg = new CfgModel();
         cfg.setCatg("system");
         cfg.setName("test01");
         cfg.setTitle("测试参数01");
@@ -45,13 +50,13 @@ public class CfgServiceTestMain {
         RightService rgtService = actxt.getBean(RightService.class);
         rgtService.remove();
 
-        RightDTO right = new RightDTO();
+        RightModel right = new RightModel();
         right.setCode("right-code-test");
         right.setName("测试权限名称");
 
         rgtService.create(right);
 
-        List<RightDTO> cfgs = RightUtils.find();
+        List<RightModel> cfgs = RightUtils.find();
         logger.warn("RightService#find(): {}", cfgs);
     }
 

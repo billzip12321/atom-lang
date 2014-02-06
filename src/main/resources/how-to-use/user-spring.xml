@@ -19,6 +19,9 @@
 					</bean>
 				</property>
 				<property name="tableName" value="atom_user" />
+				<property name="createTableSQL">
+					<value>classpath:/model-sql/user-MySQL.sql</value>
+				</property>
 				<property name="noFieldName" value="no" />
 				<property name="nickNameFieldName" value="nick_name" />
 				<property name="stateFieldName" value="state" />

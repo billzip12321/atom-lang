@@ -19,6 +19,9 @@
 					</bean>
 				</property>
 				<property name="tableName" value="atom_topic" />
+				<property name="createTableSQL">
+					<value>classpath:/model-sql/topic-MySQL.sql</value>
+				</property>
 				<property name="idFieldName" value="id" />
 				<property name="modelFieldName" value="model" />
 				<property name="stateFieldName" value="state" />

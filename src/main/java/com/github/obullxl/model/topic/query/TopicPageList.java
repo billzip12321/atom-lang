@@ -2,12 +2,13 @@
  * Author: obullxl@gmail.com
  * Copyright (c) 2004-2013 All Rights Reserved.
  */
-package com.github.obullxl.model.topic;
+package com.github.obullxl.model.topic.query;
 
 import java.util.List;
 
 import com.github.obullxl.lang.Paginator;
 import com.github.obullxl.lang.biz.BizPageList;
+import com.github.obullxl.model.topic.TopicModel;
 
 /**
  * 主题分页列表结果

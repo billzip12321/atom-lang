@@ -110,6 +110,14 @@ public class UserRightUtils {
     }
 
     /**
+     * 根据用户编号+权限代码获取模型
+     */
+    public static UserRightModel findByUnique(String userNo, String rgtCode) {
+        RelateModel relate = RelateUtils.findByUnique(CATG, userNo, rgtCode);
+        return from(relate);
+    }
+
+    /**
      * 是否存在用户权限
      */
     public static boolean existUserRight(String userNo, String rgtCode) {

@@ -11,6 +11,8 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 import com.github.obullxl.lang.utils.LogUtils;
+import com.github.obullxl.model.user.UserModel;
+import com.github.obullxl.model.user.service.UserService;
 
 /**
  * 用户模型测试
@@ -30,15 +32,12 @@ public class UserServiceTestMain {
 
         UserService service = actxt.getBean(UserService.class);
 
-        List<UserModel> users = service.find();
-        logger.warn("UserService#find(): {}", users);
-
         String unique = "老牛啊";
-        UserModel user = service.findUnique(unique);
+        UserModel user = service.findByUnique(unique);
         logger.warn("UserService#findUnique('{}'): {}", unique, user);
         
         String no = "0001";
-        int count = service.remove(no);
+        int count = service.removeByNo(no);
         logger.warn("UserService#delete('{}'): {}", no, count);
     }
 

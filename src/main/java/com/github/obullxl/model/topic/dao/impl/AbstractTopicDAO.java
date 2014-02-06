@@ -10,11 +10,16 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.lang.StringUtils;
+
 import com.github.obullxl.lang.das.AbstractDAO;
 import com.github.obullxl.lang.das.JdbcInsert;
 import com.github.obullxl.lang.das.JdbcSelect;
 import com.github.obullxl.lang.das.JdbcStmtValue;
 import com.github.obullxl.lang.das.JdbcUpdate;
+import com.github.obullxl.lang.das.sql.OP;
+import com.github.obullxl.lang.das.sql.SQLBuilder;
+import com.github.obullxl.lang.das.sql.SQLContext;
 import com.github.obullxl.lang.enums.ValveBoolEnum;
 import com.github.obullxl.model.topic.TopicModel;
 import com.github.obullxl.model.topic.TopicModelEnum;
@@ -22,6 +27,7 @@ import com.github.obullxl.model.topic.dao.TopicDAO;
 import com.github.obullxl.model.topic.enums.TopicMediaEnum;
 import com.github.obullxl.model.topic.enums.TopicStateEnum;
 import com.github.obullxl.model.topic.enums.TopicTopEnum;
+import com.github.obullxl.model.topic.query.TopicQueryDAS;
 
 /**
  * 主题模型DAO默认实现
@@ -205,8 +211,6 @@ public abstract class AbstractTopicDAO extends AbstractDAO implements TopicDAO {
             sql.append(",").append(this.mediaUrlFieldName);
             sql.append(",").append(this.postUserNoFieldName);
             sql.append(",").append(this.postNickNameFieldName);
-            sql.append(",").append(this.linkUrlFieldName);
-            sql.append(",").append(this.mediaUrlFieldName);
             sql.append(",").append(this.gmtPostFieldName);
             sql.append(",").append(this.visitCountFieldName);
             sql.append(",").append(this.replyCountFieldName);
@@ -355,14 +359,94 @@ public abstract class AbstractTopicDAO extends AbstractDAO implements TopicDAO {
     /** 
      * @see com.github.obullxl.model.topic.dao.TopicDAO#deleteByID(java.lang.String)
      */
-    public int deleteByID(final String id) {
-        // SQL
-        String sql = "DELETE FROM " + this.tableName + " WHERE " + this.idFieldName + "=?";
+    public int deleteByID(String id) {
+        return this.deleteValues(this.idFieldName, id);
+    }
 
-        // 执行删除
-        return JdbcUpdate.executeUpdate(this.dataSource, sql, new JdbcStmtValue() {
+    /** 
+     * @see com.github.obullxl.model.topic.dao.TopicDAO#deleteByTopicID(java.lang.String)
+     */
+    public int deleteByTopicID(String topicId) {
+        return this.deleteValues(this.topicFieldName, topicId);
+    }
+
+    /** 
+     * @see com.github.obullxl.model.topic.dao.TopicDAO#deleteByUserNo(java.lang.String)
+     */
+    public int deleteByUserNo(String userNo) {
+        return this.deleteValues(new String[] { this.postUserNoFieldName, this.replyUserNoFieldName }, new String[] { userNo, userNo });
+    }
+
+    /** 
+     * @see com.github.obullxl.model.topic.dao.TopicDAO#deleteByPostUserNo(java.lang.String)
+     */
+    public int deleteByPostUserNo(String postUserNo) {
+        return this.deleteValues(this.postUserNoFieldName, postUserNo);
+    }
+
+    /** 
+     * @see com.github.obullxl.model.topic.dao.TopicDAO#deleteByReplyUserNo(java.lang.String)
+     */
+    public int deleteByReplyUserNo(String replyUserNo) {
+        return this.deleteValues(this.replyUserNoFieldName, replyUserNo);
+    }
+
+    /** 
+     * @see com.github.obullxl.model.topic.dao.TopicDAO#selectByID(java.lang.String)
+     */
+    public TopicModel selectByID(final String id) {
+        return this.selectValue(this.idFieldName, id);
+    }
+
+    /** 
+     * @see com.github.obullxl.model.topic.dao.TopicDAO#count(com.github.obullxl.model.topic.query.TopicQueryDAS)
+     */
+    public int count(TopicQueryDAS query) {
+        final SQLContext ctxt = this.buildWhere(query);
+        String where = ctxt.whereSQL();
+
+        StringBuilder sql = new StringBuilder();
+        sql.append("SELECT COUNT(*) AS count FROM ").append(this.tableName);
+
+        if (StringUtils.isNotBlank(where)) {
+            sql.append(" WHERE ").append(where);
+        }
+
+        return JdbcSelect.count(this.dataSource, sql.toString(), "count", new JdbcStmtValue() {
             public void set(PreparedStatement stmt) throws SQLException {
-                stmt.setString(1, id);
+                ctxt.stmtValue(stmt);
+            }
+        });
+    }
+
+    /** 
+     * @see com.github.obullxl.model.topic.dao.TopicDAO#selectPage(com.github.obullxl.model.topic.query.TopicQueryDAS)
+     */
+    public List<TopicModel> selectPage(TopicQueryDAS query) {
+        final SQLContext ctxt = this.buildWhere(query);
+        String where = ctxt.whereSQL();
+
+        StringBuilder sql = new StringBuilder();
+        sql.append("SELECT ").append(this.findTableFields());
+        sql.append(" FROM ").append(this.tableName);
+
+        if (StringUtils.isNotBlank(where)) {
+            sql.append(" WHERE ").append(where);
+        }
+
+        if (StringUtils.isNotBlank(query.getOrderbyField())) {
+            sql.append(" ORDER BY ").append(query.getOrderbyField());
+
+            if (StringUtils.isNotBlank(query.getOrderbyType())) {
+                sql.append(" ").append(query.getOrderbyType());
+            }
+        }
+
+        sql.append(" LIMIT ").append(query.getOffset()).append(",").append(query.getPageSize());
+
+        return JdbcSelect.selectList(this.dataSource, sql.toString(), this, new JdbcStmtValue() {
+            public void set(PreparedStatement stmt) throws SQLException {
+                ctxt.stmtValue(stmt);
             }
         });
     }
@@ -412,20 +496,32 @@ public abstract class AbstractTopicDAO extends AbstractDAO implements TopicDAO {
         return topics;
     }
 
-    /** 
-     * @see com.github.obullxl.model.topic.dao.TopicDAO#selectByID(java.lang.String)
+    /**
+     * 构建Where条件
      */
-    public TopicModel selectByID(final String id) {
-        StringBuilder sql = new StringBuilder();
-        sql.append("SELECT ").append(this.findTableFields());
-        sql.append(" FROM ").append(this.tableName);
-        sql.append(" WHERE ").append(this.idFieldName).append("=?");
+    public SQLContext buildWhere(TopicQueryDAS query) {
+        SQLBuilder sql = SQLBuilder.newBuilder();
 
-        return JdbcSelect.selectOne(this.dataSource, sql.toString(), this, new JdbcStmtValue() {
-            public void set(PreparedStatement stmt) throws SQLException {
-                stmt.setString(1, id);
-            }
-        });
+        sql.where(this.idFieldName, query.getId());
+        sql.where(this.modelFieldName, query.getModel());
+        sql.where(this.stateFieldName, query.getState());
+        sql.where(this.topFieldName, query.getTop());
+        sql.where(this.eliteFieldName, query.getElite());
+        sql.where(this.originalFieldName, query.getOriginal());
+        sql.where(this.mediaFieldName, query.getMedia());
+        sql.where(this.replyFieldName, query.getReply());
+        sql.where(OP.IN, this.catgFieldName, query.getCatgs());
+        sql.where(this.topicFieldName, query.getTopicId());
+        sql.where(this.postUserNoFieldName, query.getPostUserNo());
+        sql.where(this.gmtPostFieldName, query.getGmtPostBegin(), query.getGmtPostFinish());
+        sql.where(this.replyUserNoFieldName, query.getReplyUserNo());
+        sql.where(this.gmtReplyFieldName, query.getGmtReplyBegin(), query.getGmtReplyFinish());
+        sql.where(OP.LK, this.extMapFieldName, query.getExtMap());
+        sql.where(OP.LK, this.titleFieldName, query.getTitle());
+        sql.where(OP.LK, this.summaryFieldName, query.getSummary());
+        sql.where(OP.LK, this.contentFieldName, query.getContent());
+
+        return sql.finishBuilder();
     }
 
     // ~~~~~~~~~~~~ 依赖注入 ~~~~~~~~~~~~ //

@@ -32,6 +32,18 @@ public abstract class AbstractDAO implements JdbcRowMap {
     /** Logger */
     protected static final Logger logger             = LogUtils.get();
 
+    /** JDBC操作符 */
+    public static final String    IN                 = " IN ";
+    public static final String    OR                 = " OR ";
+    public static final String    AND                = " AND ";
+
+    public static final String    EQ                 = "=";
+    public static final String    NQ                 = "<>";
+    public static final String    LT                 = "<";
+    public static final String    GT                 = ">";
+    public static final String    LTQ                = "<=";
+    public static final String    GTQ                = ">=";
+
     /** 数据源 */
     protected DataSource          dataSource;
 
@@ -102,7 +114,7 @@ public abstract class AbstractDAO implements JdbcRowMap {
      * 初始化数据表
      */
     public void createTable() {
-        if(this.createTableSQL == null || !this.createTableSQL.exists()) {
+        if (this.createTableSQL == null || !this.createTableSQL.exists()) {
             // TODO:
         }
     }
@@ -121,11 +133,81 @@ public abstract class AbstractDAO implements JdbcRowMap {
     }
 
     /**
-     * 删除所有数据表记录
+     * 根据单个字段查询单个数据模型
      */
-    public int deleteAll() {
-        String sql = "DELETE FROM " + this.tableName;
-        return JdbcUpdate.executeUpdate(this.dataSource, sql, new DefaultJdbcStmtValue());
+    public <T> T selectValue(String field, Object value) {
+        return this.selectValue(new String[] { field }, new Object[] { value });
+    }
+
+    /**
+     * 根据字段数组查询单个数据模型
+     */
+    public <T> T selectValue(String[] fields, final Object[] values) {
+        StringBuilder sql = new StringBuilder();
+        sql.append("SELECT ").append(this.findTableFields());
+        sql.append(" FROM ").append(this.tableName);
+
+        JdbcStmtValue stmtValue = null;
+        if (fields == null || fields.length < 1 || values == null || values.length < 1) {
+            stmtValue = new DefaultJdbcStmtValue();
+        } else {
+            sql.append(" WHERE ");
+            for (int i = 0; i < fields.length; i++) {
+                if (i > 0) {
+                    sql.append(" AND ");
+                }
+                sql.append(fields[i]).append("=?");
+            }
+
+            stmtValue = new JdbcStmtValue() {
+                public void set(PreparedStatement stmt) throws SQLException {
+                    for (int i = 0; i < values.length; i++) {
+                        stmt.setObject(i + 1, values[i]);
+                    }
+                }
+            };
+        }
+
+        return JdbcSelect.selectOne(this.dataSource, sql.toString(), this, stmtValue);
+    }
+
+    /**
+     * 根据单个字段查询数据模型列表
+     */
+    public <T> List<T> selectValues(String field, Object value) {
+        return this.selectValues(new String[] { field }, new Object[] { value });
+    }
+
+    /**
+     * 根据字段数组查询数据模型列表
+     */
+    public <T> List<T> selectValues(String[] fields, final Object[] values) {
+        StringBuilder sql = new StringBuilder();
+        sql.append("SELECT ").append(this.findTableFields());
+        sql.append(" FROM ").append(this.tableName);
+
+        JdbcStmtValue stmtValue = null;
+        if (fields == null || fields.length < 1 || values == null || values.length < 1) {
+            stmtValue = new DefaultJdbcStmtValue();
+        } else {
+            sql.append(" WHERE ");
+            for (int i = 0; i < fields.length; i++) {
+                if (i > 0) {
+                    sql.append(" AND ");
+                }
+                sql.append(fields[i]).append("=?");
+            }
+
+            stmtValue = new JdbcStmtValue() {
+                public void set(PreparedStatement stmt) throws SQLException {
+                    for (int i = 0; i < values.length; i++) {
+                        stmt.setObject(i + 1, values[i]);
+                    }
+                }
+            };
+        }
+
+        return JdbcSelect.selectList(this.dataSource, sql.toString(), this, stmtValue);
     }
 
     /**
@@ -150,6 +232,49 @@ public abstract class AbstractDAO implements JdbcRowMap {
         for (int i = 0; i < fields.length; i++) {
             if (i > 0) {
                 sql.append(",");
+            }
+            sql.append(fields[i]).append("=?");
+        }
+
+        return JdbcUpdate.executeUpdate(this.dataSource, sql.toString(), new JdbcStmtValue() {
+            public void set(PreparedStatement stmt) throws SQLException {
+                int idx = 0;
+                for (Object value : values) {
+                    stmt.setObject(++idx, value);
+                }
+            }
+        });
+    }
+
+    /**
+     * 删除所有数据表记录
+     */
+    public int deleteAll() {
+        String sql = "DELETE FROM " + this.tableName;
+        return JdbcUpdate.executeUpdate(this.dataSource, sql, new DefaultJdbcStmtValue());
+    }
+
+    /**
+     * 根据单个字段删除记录
+     */
+    public int deleteValues(String field, Object value) {
+        return this.deleteValues(new String[] { field }, new Object[] { value });
+    }
+
+    /**
+     * 根据多个字段删除记录
+     */
+    public int deleteValues(String[] fields, final Object[] values) {
+        if (fields == null || fields.length < 1 || values == null || values.length < 1) {
+            return 0;
+        }
+
+        StringBuilder sql = new StringBuilder();
+        sql.append("DELETE FROM ").append(this.tableName).append(" WHERE ");
+
+        for (int i = 0; i < fields.length; i++) {
+            if (i > 0) {
+                sql.append(" AND ");
             }
             sql.append(fields[i]).append("=?");
         }

@@ -24,7 +24,7 @@ public class TopicModel extends BaseDTO {
     /** ID */
     private String            id;
 
-    /** 模型分类 */
+    /** 模型 */
     private TopicModelEnum    modelEnum;
 
     /** 状态 */
@@ -81,7 +81,7 @@ public class TopicModel extends BaseDTO {
     /** 跟帖者昵称 */
     private String            replyNickName;
 
-    /** 发布时间 */
+    /** 跟帖时间 */
     private Date              gmtReply;
 
     /** 扩展参数 */

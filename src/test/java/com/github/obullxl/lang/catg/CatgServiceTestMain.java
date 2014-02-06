@@ -11,6 +11,9 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 import com.github.obullxl.lang.utils.LogUtils;
+import com.github.obullxl.model.catg.forum.ForumModel;
+import com.github.obullxl.model.catg.forum.ForumUtils;
+import com.github.obullxl.model.catg.service.ForumService;
 
 /**
  * 系统参数服务测试主类
@@ -49,8 +52,7 @@ public class CatgServiceTestMain {
         forumService.remove();
 
         for (int i = 1; i <= 10; i++) {
-            ForumDTO forum = new ForumDTO();
-            forum.setCatg("system-" + i);
+            ForumModel forum = new ForumModel();
             forum.setCode("test-forum-" + i);
             forum.setSort("000" + i);
             forum.setTitle("安众贷测试论坛标题-" + i);
@@ -65,7 +67,7 @@ public class CatgServiceTestMain {
             forumService.create(forum);
         }
 
-        List<ForumDTO> forums = ForumUtils.find();
+        List<ForumModel> forums = ForumUtils.find();
         logger.warn("ForumService#find(): {}", forums);
     }
 

@@ -28,6 +28,38 @@ public final class JdbcSelect {
     private static final Logger logger = LogUtils.get();
 
     /**
+     * 统计条数
+     */
+    public static final int count(DataSource dataSource, String sql, String field, JdbcStmtValue ss) {
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        ResultSet rs = null;
+        try {
+            // 连接
+            conn = dataSource.getConnection();
+            stmt = conn.prepareStatement(sql);
+
+            // 设置值
+            ss.set(stmt);
+
+            // 执行查询
+            rs = stmt.executeQuery();
+
+            // 对象映射
+            rs.next();
+            return rs.getInt(field);
+        } catch (Exception e) {
+            String txt = "[数据查询]-统计条数[" + sql + "]异常!";
+            logger.error(txt, e);
+            throw new RuntimeException(txt, e);
+        } finally {
+            DBUtils.closeQuietly(rs);
+            DBUtils.closeQuietly(stmt);
+            DBUtils.closeQuietly(conn);
+        }
+    }
+
+    /**
      * 查询单条记录
      */
     public static final <T> T selectOne(DataSource dataSource, String sql, JdbcRowMap rm, JdbcStmtValue ss) {

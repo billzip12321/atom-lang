@@ -4,7 +4,10 @@
  */
 package com.github.obullxl.model.topic.dao;
 
+import java.util.List;
+
 import com.github.obullxl.model.topic.TopicModel;
+import com.github.obullxl.model.topic.query.TopicQueryDAS;
 
 /**
  * 主题模型DAO
@@ -41,8 +44,38 @@ public interface TopicDAO {
     public int deleteByID(String id);
     
     /**
+     * 根据主题ID删除主题模型
+     */
+    public int deleteByTopicID(String topicId);
+    
+    /**
+     * 根据发/跟帖者删除主题模型
+     */
+    public int deleteByUserNo(String userNo);
+    
+    /**
+     * 根据发帖者删除主题模型
+     */
+    public int deleteByPostUserNo(String postUserNo);
+    
+    /**
+     * 根据跟帖者删除主题模型
+     */
+    public int deleteByReplyUserNo(String replyUserNo);
+
+    /**
      * 根据ID查询主题
      */
     public TopicModel selectByID(String id);
+
+    /**
+     * 统计
+     */
+    public int count(TopicQueryDAS query);
+
+    /**
+     * 分页查询
+     */
+    public List<TopicModel> selectPage(TopicQueryDAS query);
 
 }

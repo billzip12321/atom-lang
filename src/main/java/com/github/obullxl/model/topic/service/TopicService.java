@@ -4,7 +4,11 @@
  */
 package com.github.obullxl.model.topic.service;
 
+import java.util.List;
+
 import com.github.obullxl.model.topic.TopicModel;
+import com.github.obullxl.model.topic.query.TopicPageList;
+import com.github.obullxl.model.topic.query.TopicQueryForm;
 
 /**
  * 主题模型服务接口
@@ -45,8 +49,28 @@ public interface TopicService {
     public int removeByID(String id);
     
     /**
+     * 根据主题ID删除主题模型
+     */
+    public int removeByTopicID(String topicId);
+
+    /**
      * 查询主题模型
      */
     public TopicModel findByID(String id);
+
+    /**
+     * 统计主题模型
+     */
+    public int count(TopicQueryForm form);
+
+    /**
+     * 查询主题模型列表
+     */
+    public List<TopicModel> findPage(TopicQueryForm form);
+
+    /**
+     * 分页查询主题模型
+     */
+    public TopicPageList findPageList(TopicQueryForm form);
 
 }

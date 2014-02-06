@@ -7,9 +7,6 @@ package com.github.obullxl.lang.timer;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
-import com.github.obullxl.lang.cfg.CfgDTO;
-import com.github.obullxl.lang.cfg.CfgService;
-
 /**
  * 
  * @author obullxl@gmail.com

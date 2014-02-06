@@ -11,6 +11,12 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 import com.github.obullxl.lang.utils.LogUtils;
+import com.github.obullxl.model.relate.forumuser.ForumUserModel;
+import com.github.obullxl.model.relate.forumuser.ForumUserUtils;
+import com.github.obullxl.model.relate.service.ForumUserService;
+import com.github.obullxl.model.relate.service.UserRightService;
+import com.github.obullxl.model.relate.userright.UserRightModel;
+import com.github.obullxl.model.relate.userright.UserRightUtils;
 
 /**
  * 关系模型服务测试
@@ -32,10 +38,10 @@ public class RelateServiceTestMain {
         ForumUserService forumUserService = actxt.getBean(ForumUserService.class);
         forumUserService.remove();
 
-        List<ForumUserDTO> fusers = forumUserService.find();
+        List<ForumUserModel> fusers = ForumUserUtils.find();
         logger.warn("ForumUserService#find(): {}", fusers);
 
-        ForumUserDTO fuser = new ForumUserDTO();
+        ForumUserModel fuser = new ForumUserModel();
         fuser.setCode("forum-code");
         fuser.setName("测试论坛名称");
         fuser.setUserNo("2014010000000001");
@@ -43,17 +49,17 @@ public class RelateServiceTestMain {
         fuser.setExtMap("{}");
         forumUserService.create(fuser);
 
-        fusers = forumUserService.find();
+        fusers = ForumUserUtils.find();
         logger.warn("ForumUserService#find(): {}", fusers);
 
         // 用户权限
         UserRightService userRightService = actxt.getBean(UserRightService.class);
         userRightService.remove();
 
-        List<UserRightDTO> urgts = userRightService.find();
+        List<UserRightModel> urgts = UserRightUtils.find();
         logger.warn("UserRightService#find(): {}", urgts);
 
-        UserRightDTO urgt = new UserRightDTO();
+        UserRightModel urgt = new UserRightModel();
         urgt.setUserNo("2014010000000001");
         urgt.setNickName("老牛啊");
         urgt.setRgtCode("RGT_LOGIN_NORMAL");
@@ -61,7 +67,7 @@ public class RelateServiceTestMain {
         urgt.setExtMap("{}");
         userRightService.create(urgt);
 
-        urgts = userRightService.find();
+        urgts = UserRightUtils.find();
         logger.warn("UserRightService#find(): {}", urgts);
     }
 
