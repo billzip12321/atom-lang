@@ -26,6 +26,7 @@ public class CatgServiceTestMain {
 
     public static void main(String[] args) {
         ApplicationContext actxt = new ClassPathXmlApplicationContext(//
+            "classpath:/how-to-use/db-sqlite-config.xml",//
             "classpath:/how-to-use/catg-spring.xml",//
             "classpath:/spring/tick-timer-config.xml");
 
@@ -55,9 +56,9 @@ public class CatgServiceTestMain {
             ForumModel forum = new ForumModel();
             forum.setCode("test-forum-" + i);
             forum.setSort("000" + i);
-            forum.setTitle("安众贷测试论坛标题-" + i);
+            forum.setTitle("安众贷测试论坛-" + i);
             // forum.setExtMap("key1=value1|key2=value2");
-            forum.setSummary("安众贷测试论坛描述-" + i + "论坛的发展也如同网络雨后春笋般的出现，并迅速的发展壮大。论坛几乎涵盖了人们生活的各个方面，几乎每一个人都可以找到自己感兴趣或者需要了解的专题性论坛，而各类网站，综合性门户网站或者功能性专题网站也都青睐于开设自己的论坛，以促进网友之间的交流，增加互动性和丰富网站的内容。");
+            forum.setSummary("安众贷测试论坛-" + i + "-论坛的发展也如同网络雨后春笋般的出现，并迅速的发展壮大。论坛几乎涵盖了人们生活的各个方面，几乎每一个人都可以找到自己感兴趣或者需要了解的专题性论坛，而各类网站，综合性门户网站或者功能性专题网站也都青睐于开设自己的论坛，以促进网友之间的交流，增加互动性和丰富网站的内容。");
 
             forum.setTotalPost(10);
             forum.setTotalReply(20);

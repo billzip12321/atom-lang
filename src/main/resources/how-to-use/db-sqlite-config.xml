@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd" default-autowire="byName">
+
+	<bean id="jeesiteDataSource" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close">
+		<property name="driverClassName">
+			<value>org.sqlite.JDBC</value>
+		</property>
+		<property name="url">
+			<value>jdbc:sqlite:D:/CodeGIT/atom-jeesite/WebRoot/public/jeesite.db</value>
+		</property>
+		<property name="validationQuery">
+			<value>SELECT 1</value>
+		</property>
+		<property name="connectionProperties">
+			<value>date_string_format=yyyy-MM-dd HH:mm:ss;</value>
+		</property>
+	</bean>
+
+</beans>
