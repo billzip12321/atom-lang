@@ -32,6 +32,10 @@ public enum OP {
     //
     NK(" NOT LIKE "),
     //
+    NULL(" IS NULL"),
+    //
+    NOT_NULL(" IS NOT NULL"),
+    //
     ;
 
     private final String operate;

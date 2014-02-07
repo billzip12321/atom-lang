@@ -13,34 +13,15 @@ import java.sql.SQLException;
  * @author obullxl@gmail.com
  * @version $Id: RangeParam.java, V1.0.1 2014年2月6日 下午2:30:11 $
  */
-public class ParamRange implements ParamSQL {
+public class ParamRange<T> implements ParamSQL {
+    /** 字段名称 */
     private String field;
-    private Object valueBegin;
-    private Object valueFinish;
 
-    private ParamRange() {
-    }
+    /** 查询条件开始值 */
+    private T      valueBegin;
 
-    public static ParamRange to(String field) {
-        ParamRange sql = new ParamRange();
-        sql.setField(field);
-
-        return sql;
-    }
-
-    public static ParamRange to(String field, Object begin) {
-        ParamRange sql = to(field);
-        sql.setValueBegin(begin);
-
-        return sql;
-    }
-
-    public static ParamRange to(String field, Object begin, Object finish) {
-        ParamRange sql = to(field, begin);
-        sql.setValueFinish(finish);
-
-        return sql;
-    }
+    /** 查询条件结束值 */
+    private T      valueFinish;
 
     /** 
      * @see com.github.obullxl.lang.das.sql.ParamSQL#whereSQL()
@@ -84,6 +65,8 @@ public class ParamRange implements ParamSQL {
         return idx;
     }
 
+    // ~~~~~~~~~~~~~~~~ getters and setters ~~~~~~~~~~~~~~~~~ //
+
     public String getField() {
         return field;
     }
@@ -92,19 +75,19 @@ public class ParamRange implements ParamSQL {
         this.field = field;
     }
 
-    public Object getValueBegin() {
+    public T getValueBegin() {
         return valueBegin;
     }
 
-    public void setValueBegin(Object valueBegin) {
+    public void setValueBegin(T valueBegin) {
         this.valueBegin = valueBegin;
     }
 
-    public Object getValueFinish() {
+    public T getValueFinish() {
         return valueFinish;
     }
 
-    public void setValueFinish(Object valueFinish) {
+    public void setValueFinish(T valueFinish) {
         this.valueFinish = valueFinish;
     }
 

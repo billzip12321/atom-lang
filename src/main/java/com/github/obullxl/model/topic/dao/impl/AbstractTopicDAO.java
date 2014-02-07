@@ -17,9 +17,8 @@ import com.github.obullxl.lang.das.JdbcInsert;
 import com.github.obullxl.lang.das.JdbcSelect;
 import com.github.obullxl.lang.das.JdbcStmtValue;
 import com.github.obullxl.lang.das.JdbcUpdate;
-import com.github.obullxl.lang.das.sql.OP;
-import com.github.obullxl.lang.das.sql.SQLBuilder;
-import com.github.obullxl.lang.das.sql.SQLContext;
+import com.github.obullxl.lang.das.sql.OBEnum;
+import com.github.obullxl.lang.das.sql.select.SelectSQL;
 import com.github.obullxl.lang.enums.ValveBoolEnum;
 import com.github.obullxl.model.topic.TopicModel;
 import com.github.obullxl.model.topic.TopicModelEnum;
@@ -402,19 +401,13 @@ public abstract class AbstractTopicDAO extends AbstractDAO implements TopicDAO {
      * @see com.github.obullxl.model.topic.dao.TopicDAO#count(com.github.obullxl.model.topic.query.TopicQueryDAS)
      */
     public int count(TopicQueryDAS query) {
-        final SQLContext ctxt = this.buildWhere(query);
-        String where = ctxt.whereSQL();
+        final SelectSQL select = SelectSQL.start();
+        select.select("COUNT(*) AS count").from(this.tableName);
+        this.buildWhere(select, query);
 
-        StringBuilder sql = new StringBuilder();
-        sql.append("SELECT COUNT(*) AS count FROM ").append(this.tableName);
-
-        if (StringUtils.isNotBlank(where)) {
-            sql.append(" WHERE ").append(where);
-        }
-
-        return JdbcSelect.count(this.dataSource, sql.toString(), "count", new JdbcStmtValue() {
+        return JdbcSelect.count(this.dataSource, select.findSQL(), "count", new JdbcStmtValue() {
             public void set(PreparedStatement stmt) throws SQLException {
-                ctxt.stmtValue(stmt);
+                select.stmtValue(stmt);
             }
         });
     }
@@ -423,30 +416,23 @@ public abstract class AbstractTopicDAO extends AbstractDAO implements TopicDAO {
      * @see com.github.obullxl.model.topic.dao.TopicDAO#selectPage(com.github.obullxl.model.topic.query.TopicQueryDAS)
      */
     public List<TopicModel> selectPage(TopicQueryDAS query) {
-        final SQLContext ctxt = this.buildWhere(query);
-        String where = ctxt.whereSQL();
-
-        StringBuilder sql = new StringBuilder();
-        sql.append("SELECT ").append(this.findTableFields());
-        sql.append(" FROM ").append(this.tableName);
-
-        if (StringUtils.isNotBlank(where)) {
-            sql.append(" WHERE ").append(where);
-        }
+        final SelectSQL select = SelectSQL.start();
+        select.select(this.findTableFields()).from(this.tableName);
+        this.buildWhere(select, query);
 
         if (StringUtils.isNotBlank(query.getOrderbyField())) {
-            sql.append(" ORDER BY ").append(query.getOrderbyField());
-
             if (StringUtils.isNotBlank(query.getOrderbyType())) {
-                sql.append(" ").append(query.getOrderbyType());
+                select.orderby(query.getOrderbyField(), OBEnum.findDefault(query.getOrderbyType()));
+            } else {
+                select.orderby(query.getOrderbyField());
             }
         }
+        
+        select.limit(query.getOffset(), query.getPageSize());
 
-        sql.append(" LIMIT ").append(query.getOffset()).append(",").append(query.getPageSize());
-
-        return JdbcSelect.selectList(this.dataSource, sql.toString(), this, new JdbcStmtValue() {
+        return JdbcSelect.selectList(this.dataSource, select.findSQL(), this, new JdbcStmtValue() {
             public void set(PreparedStatement stmt) throws SQLException {
-                ctxt.stmtValue(stmt);
+                select.stmtValue(stmt);
             }
         });
     }
@@ -499,29 +485,25 @@ public abstract class AbstractTopicDAO extends AbstractDAO implements TopicDAO {
     /**
      * 构建Where条件
      */
-    public SQLContext buildWhere(TopicQueryDAS query) {
-        SQLBuilder sql = SQLBuilder.newBuilder();
-
-        sql.where(this.idFieldName, query.getId());
-        sql.where(this.modelFieldName, query.getModel());
-        sql.where(this.stateFieldName, query.getState());
-        sql.where(this.topFieldName, query.getTop());
-        sql.where(this.eliteFieldName, query.getElite());
-        sql.where(this.originalFieldName, query.getOriginal());
-        sql.where(this.mediaFieldName, query.getMedia());
-        sql.where(this.replyFieldName, query.getReply());
-        sql.where(OP.IN, this.catgFieldName, query.getCatgs());
-        sql.where(this.topicFieldName, query.getTopicId());
-        sql.where(this.postUserNoFieldName, query.getPostUserNo());
-        sql.where(this.gmtPostFieldName, query.getGmtPostBegin(), query.getGmtPostFinish());
-        sql.where(this.replyUserNoFieldName, query.getReplyUserNo());
-        sql.where(this.gmtReplyFieldName, query.getGmtReplyBegin(), query.getGmtReplyFinish());
-        sql.where(OP.LK, this.extMapFieldName, query.getExtMap());
-        sql.where(OP.LK, this.titleFieldName, query.getTitle());
-        sql.where(OP.LK, this.summaryFieldName, query.getSummary());
-        sql.where(OP.LK, this.contentFieldName, query.getContent());
-
-        return sql.finishBuilder();
+    public void buildWhere(SelectSQL sql, TopicQueryDAS query) {
+        sql.eq(this.idFieldName, query.getId());
+        sql.eq(this.modelFieldName, query.getModel());
+        sql.eq(this.stateFieldName, query.getState());
+        sql.eq(this.topFieldName, query.getTop());
+        sql.eq(this.eliteFieldName, query.getElite());
+        sql.eq(this.originalFieldName, query.getOriginal());
+        sql.eq(this.mediaFieldName, query.getMedia());
+        sql.eq(this.replyFieldName, query.getReply());
+        sql.in(this.catgFieldName, query.getCatgs());
+        sql.eq(this.topicFieldName, query.getTopicId());
+        sql.eq(this.postUserNoFieldName, query.getPostUserNo());
+        sql.range(this.gmtPostFieldName, query.getGmtPostBegin(), query.getGmtPostFinish());
+        sql.eq(this.replyUserNoFieldName, query.getReplyUserNo());
+        sql.range(this.gmtReplyFieldName, query.getGmtReplyBegin(), query.getGmtReplyFinish());
+        sql.like(this.extMapFieldName, query.getExtMap());
+        sql.like(this.titleFieldName, query.getTitle());
+        sql.like(this.summaryFieldName, query.getSummary());
+        sql.like(this.contentFieldName, query.getContent());
     }
 
     // ~~~~~~~~~~~~ 依赖注入 ~~~~~~~~~~~~ //

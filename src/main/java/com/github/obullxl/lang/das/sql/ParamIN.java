@@ -6,33 +6,46 @@ package com.github.obullxl.lang.das.sql;
 
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.util.Iterator;
+import java.util.List;
 
 /**
- * SQL参数
+ * IN查询条件
  * 
  * @author obullxl@gmail.com
- * @version $Id: ParamSQL.java, V1.0.1 2014年2月6日 下午12:48:52 $
+ * @version $Id: ParamIN.java, V1.0.1 2014年2月7日 下午2:28:12 $
  */
-public class ParamSingle<T> implements ParamSQL {
+public class ParamIN<T> implements ParamSQL {
     /** 操作符 */
-    private OP     operate;
+    private OP      operate;
 
     /** 字段名称 */
-    private String field;
+    private String  field;
 
     /** 查询条件值 */
-    private T      value;
+    private List<T> values;
 
     /** 
      * @see com.github.obullxl.lang.das.sql.ParamSQL#whereSQL()
      */
     public String whereSQL() {
         StringBuilder sql = new StringBuilder();
-
         sql.append("(");
-        sql.append(this.field).append(this.operate.getOperate()).append("?");
+        sql.append(this.field).append(this.operate.getOperate());
+
+        Iterator<T> values = this.values.iterator();
+        sql.append("(");
+        while (values.hasNext()) {
+            sql.append("?");
+            values.next();
+
+            if (values.hasNext()) {
+                sql.append(",");
+            }
+        }
         sql.append(")");
 
+        sql.append(")");
         return sql.toString();
     }
 
@@ -40,7 +53,10 @@ public class ParamSingle<T> implements ParamSQL {
      * @see com.github.obullxl.lang.das.sql.ParamSQL#stmtValue(int, java.sql.PreparedStatement)
      */
     public int stmtValue(int idx, PreparedStatement stmt) throws SQLException {
-        stmt.setObject(++idx, this.value);
+        for (T value : this.values) {
+            stmt.setObject(++idx, value);
+        }
+
         return idx;
     }
 
@@ -62,12 +78,12 @@ public class ParamSingle<T> implements ParamSQL {
         this.field = field;
     }
 
-    public T getValue() {
-        return value;
+    public List<T> getValues() {
+        return values;
     }
 
-    public void setValue(T value) {
-        this.value = value;
+    public void setValues(List<T> values) {
+        this.values = values;
     }
 
 }

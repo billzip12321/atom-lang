@@ -7,21 +7,35 @@ package com.github.obullxl.lang.das.sql;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
+import com.github.obullxl.lang.das.sql.OP;
+import com.github.obullxl.lang.das.sql.ParamSQL;
+
 /**
- * SQL参数
+ * NULL条件
  * 
  * @author obullxl@gmail.com
- * @version $Id: ParamSQL.java, V1.0.1 2014年2月6日 下午12:48:52 $
+ * @version $Id: ParamNull.java, V1.0.1 2014年2月7日 下午2:16:14 $
  */
-public class ParamSingle<T> implements ParamSQL {
+public class ParamNULL implements ParamSQL {
     /** 操作符 */
     private OP     operate;
 
     /** 字段名称 */
     private String field;
-
-    /** 查询条件值 */
-    private T      value;
+    
+    /**
+     * CTOR
+     */
+    private ParamNULL() {
+    }
+    
+    public static ParamNULL to(OP operate, String field) {
+        ParamNULL param = new ParamNULL();
+        param.setOperate(operate);
+        param.setField(field);
+        
+        return param;
+    }
 
     /** 
      * @see com.github.obullxl.lang.das.sql.ParamSQL#whereSQL()
@@ -30,7 +44,7 @@ public class ParamSingle<T> implements ParamSQL {
         StringBuilder sql = new StringBuilder();
 
         sql.append("(");
-        sql.append(this.field).append(this.operate.getOperate()).append("?");
+        sql.append(this.field).append(this.operate.getOperate());
         sql.append(")");
 
         return sql.toString();
@@ -40,7 +54,6 @@ public class ParamSingle<T> implements ParamSQL {
      * @see com.github.obullxl.lang.das.sql.ParamSQL#stmtValue(int, java.sql.PreparedStatement)
      */
     public int stmtValue(int idx, PreparedStatement stmt) throws SQLException {
-        stmt.setObject(++idx, this.value);
         return idx;
     }
 
@@ -60,14 +73,6 @@ public class ParamSingle<T> implements ParamSQL {
 
     public void setField(String field) {
         this.field = field;
-    }
-
-    public T getValue() {
-        return value;
-    }
-
-    public void setValue(T value) {
-        this.value = value;
     }
 
 }

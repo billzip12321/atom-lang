@@ -18,6 +18,12 @@ import org.apache.commons.lang.StringUtils;
  * @version $Id: DateUtils.java, 2012-9-12 下午10:03:27 Exp $
  */
 public class DateUtils extends org.apache.commons.lang.time.DateUtils {
+    /** 日期格式：yyyy */
+    public static final String DY = "yyyy";
+
+    /** 日期格式：yyyyMM */
+    public static final String DM = "yyyyMM";
+
     /** 日期格式：yyyyMMdd */
     public static final String DS = "yyyyMMdd";
 
@@ -52,6 +58,20 @@ public class DateUtils extends org.apache.commons.lang.time.DateUtils {
         }
 
         return value;
+    }
+
+    /**
+     * 解析日期：yyyy
+     */
+    public static final Date toDateDY(String dateValue) {
+        return toDate(dateValue, DY);
+    }
+
+    /**
+     * 解析日期：yyyyMM
+     */
+    public static final Date toDateDM(String dateValue) {
+        return toDate(dateValue, DM);
     }
 
     /**
@@ -101,6 +121,20 @@ public class DateUtils extends org.apache.commons.lang.time.DateUtils {
         }
 
         return value;
+    }
+
+    /**
+     * 格式化：yyyy
+     */
+    public static final String toStringDY(Date date) {
+        return toString(date, DY);
+    }
+
+    /**
+     * 格式化：yyyyMM
+     */
+    public static final String toStringDM(Date date) {
+        return toString(date, DM);
     }
 
     /**

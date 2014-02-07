@@ -5,6 +5,7 @@
 package com.github.obullxl.lang.utils;
 
 import org.apache.commons.codec.digest.DigestUtils;
+import org.apache.commons.lang.StringUtils;
 
 /**
  * MD5工具类
@@ -18,6 +19,10 @@ public final class MD5Utils {
      * 加密
      */
     public static final String digest(String source) {
+        if (source == null) {
+            source = StringUtils.EMPTY;
+        }
+
         return DigestUtils.md5Hex(source);
     }
 
