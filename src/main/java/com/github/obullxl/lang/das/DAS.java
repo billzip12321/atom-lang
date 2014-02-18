@@ -69,6 +69,56 @@ public interface DAS {
 	}
 	
 	//
+	public static interface MSG_BOX {
+		//
+		public static final String ID = "id";
+		//
+		public static final int ID_MAX = 32;
+		//
+		public static final String CATG = "catg";
+		//
+		public static final int CATG_MAX = 10;
+		//
+		public static final String VIEW_STATE = "view_state";
+		//
+		public static final int VIEW_STATE_MAX = 10;
+		//
+		public static final String GMT_VIEW = "gmt_view";
+		//
+		public static final String POST_USER_NO = "post_user_no";
+		//
+		public static final int POST_USER_NO_MAX = 64;
+		//
+		public static final String POST_NICK_NAME = "post_nick_name";
+		//
+		public static final int POST_NICK_NAME_MAX = 32;
+		//
+		public static final String TAKE_USER_NO = "take_user_no";
+		//
+		public static final int TAKE_USER_NO_MAX = 64;
+		//
+		public static final String TAKE_NICK_NAME = "take_nick_name";
+		//
+		public static final int TAKE_NICK_NAME_MAX = 32;
+		//
+		public static final String TITLE = "title";
+		//
+		public static final int TITLE_MAX = 255;
+		//
+		public static final String TASK_USERS = "task_users";
+		//
+		public static final int TASK_USERS_MAX = 1024;
+		//
+		public static final String CONTENT = "content";
+		//
+		public static final int CONTENT_MAX = 65535;
+		//
+		public static final String GMT_CREATE = "gmt_create";
+		//
+		public static final String GMT_MODIFY = "gmt_modify";
+	}
+	
+	//
 	public static interface RELATE {
 		//
 		public static final String CATG = "catg";
@@ -134,6 +184,10 @@ public interface DAS {
 		public static final String REPLY = "reply";
 		//
 		public static final int REPLY_MAX = 10;
+		//
+		public static final String SORT = "sort";
+		//
+		public static final int SORT_MAX = 10;
 		//
 		public static final String CATG = "catg";
 		//

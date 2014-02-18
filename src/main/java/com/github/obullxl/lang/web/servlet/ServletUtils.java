@@ -94,11 +94,12 @@ public class ServletUtils {
      * 获取访问者IP。
      * <p/>
      * 在一般情况下使用Request.getRemoteAddr()即可，但是经过nginx等反向代理软件后，这个方法会失效。
-     * </p>
-     * 先从Header中获取X-Real-IP，如果不存在再从X-Forwarded-For获得第一个IP(用,分割)，
+     * <p/>
+     * 先从Header中获取X-Real-IP，如果不存在再从X-Forwarded-For获得第一个IP(用,分割)
+     * <p/>
      * 如果还不存在则调用Request.getRemoteAddr()。
      */
-    public static String getRemoteIP(HttpServletRequest request) {
+    public static String findRemoteIP(HttpServletRequest request) {
         String ip = request.getHeader("X-Real-IP");
 
         if (StringUtils.isNotBlank(ip) && !StringUtils.equalsIgnoreCase("unknown", ip)) {

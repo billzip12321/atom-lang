@@ -32,18 +32,6 @@ public abstract class AbstractDAO implements JdbcRowMap {
     /** Logger */
     protected static final Logger logger             = LogUtils.get();
 
-    /** JDBC操作符 */
-    public static final String    IN                 = " IN ";
-    public static final String    OR                 = " OR ";
-    public static final String    AND                = " AND ";
-
-    public static final String    EQ                 = "=";
-    public static final String    NQ                 = "<>";
-    public static final String    LT                 = "<";
-    public static final String    GT                 = ">";
-    public static final String    LTQ                = "<=";
-    public static final String    GTQ                = ">=";
-
     /** 数据源 */
     protected DataSource          dataSource;
 
@@ -59,6 +47,9 @@ public abstract class AbstractDAO implements JdbcRowMap {
     /** ModifyTime */
     protected String              gmtModifyFieldName = "gmt_modify";
 
+    /** 数据库元数据信息 */
+    protected JdbcMetaData        jdbcMetaData;
+
     /**
      * 初始化
      */
@@ -68,6 +59,11 @@ public abstract class AbstractDAO implements JdbcRowMap {
 
         // 初始化数据表
         this.createTable();
+
+        // 数据表元数据信息
+        this.jdbcMetaData = JdbcMetaData.newMetaData(this.dataSource, this.tableName);
+
+        logger.warn("[{}]-元数据信息:{}", this.tableName, this.jdbcMetaData);
 
         logger.warn("[{}]-数据表信息:{}({}).", //
             this.getClass().getSimpleName(), this.tableName, this.findTableFields());

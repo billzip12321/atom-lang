@@ -11,6 +11,7 @@
 
     <include table="tables/atom_catg.xml" />
     <include table="tables/atom_cfg.xml" />
+    <include table="tables/atom_msg_box.xml" />
     <include table="tables/atom_relate.xml" />
     <include table="tables/atom_topic.xml" />
     <include table="tables/atom_user.xml" />
