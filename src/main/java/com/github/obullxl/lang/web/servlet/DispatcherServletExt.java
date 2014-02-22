@@ -132,11 +132,16 @@ public class DispatcherServletExt extends DispatcherServlet {
 
         // 计时
         Profiler.start("Web请求[" + request.getMethod() + "], URL[" + this.getQueryURL(request) + "].");
-        // 打印请求信息（DEBUG）
-        this.dumpRequest(request);
+
+        // 打印请求参数
+        this.dumpRequestParams(request);
+
         try {
             // 设置上下文
             WebContext.set(new WebContext(request, response));
+
+            // 设置请求参数
+            this.fetchRequestParams(request);
 
             // 执行业务逻辑
             super.doDispatch(request, response);
@@ -249,9 +254,34 @@ public class DispatcherServletExt extends DispatcherServlet {
     }
 
     /**
-     * 打印请求信息（DEBUG）
+     * 获取请求参数
      */
-    private void dumpRequest(HttpServletRequest request) {
+    private void fetchRequestParams(HttpServletRequest request) {
+        // 请求参数
+        Map<String, Object> data = WebContext.get().getData();
+
+        // cookie中的参数
+        Cookie[] cookies = request.getCookies();
+        if (cookies != null) {
+            for (Cookie cookie : cookies) {
+                data.put(cookie.getName(), cookie.getValue());
+            }
+        }
+
+        @SuppressWarnings("unchecked")
+        Map<Object, Object> params = request.getParameterMap();
+        for (Map.Entry<Object, Object> entry : params.entrySet()) {
+            Object value = entry.getValue();
+            if (value != null) {
+                data.put(StringUtils.trimToEmpty(String.valueOf(entry.getKey())), entry.getValue());
+            }
+        }
+    }
+
+    /**
+     * 打印请求参数
+     */
+    private void dumpRequestParams(HttpServletRequest request) {
         if (logger.isDebugEnabled()) {
             StringBuilder txt = new StringBuilder(256);
 
