@@ -10,6 +10,9 @@ import java.util.List;
 import org.jsoup.helper.Validate;
 import org.slf4j.Logger;
 
+import com.github.obullxl.lang.events.EventBusExt;
+import com.github.obullxl.lang.events.EventConsts;
+import com.github.obullxl.lang.events.UniformEvent;
 import com.github.obullxl.lang.timer.TickTimer;
 import com.github.obullxl.lang.utils.DateUtils;
 import com.github.obullxl.lang.utils.LogUtils;
@@ -36,6 +39,9 @@ public class CfgServiceImpl implements TickTimer, CfgService {
 
     /** 参数模型DAO */
     private AbstractCfgDAO      cfgDAO;
+
+    /** 消息发送器 */
+    private EventBusExt         eventBusExt;
 
     /**
      * 系统初始化
@@ -94,6 +100,9 @@ public class CfgServiceImpl implements TickTimer, CfgService {
                     CfgUtils.updateCache(cfg);
                 }
             }
+
+            // 发送事件
+            this.sendMessage(new UniformEvent(cfgs, EventConsts.CFG.TOPIC, EventConsts.CFG.REFRESH));
         } finally {
             logger.warn("[参数模型]-参数模型缓存刷新完成, 耗时[{}]ms, 参数列表: \n{}", (System.currentTimeMillis() - start), CfgUtils.find());
         }
@@ -105,6 +114,9 @@ public class CfgServiceImpl implements TickTimer, CfgService {
     public void create(CfgModel cfg) {
         this.cfgDAO.insert(cfg);
         CfgUtils.updateCache(cfg);
+
+        // 发送事件
+        this.sendMessage(new UniformEvent(cfg, EventConsts.CFG.TOPIC, EventConsts.CFG.CREATE));
     }
 
     /** 
@@ -113,6 +125,9 @@ public class CfgServiceImpl implements TickTimer, CfgService {
     public int update(CfgModel cfg) {
         int cnt = this.cfgDAO.update(cfg);
         CfgUtils.updateCache(cfg);
+
+        // 发送事件
+        this.sendMessage(new UniformEvent(cfg, EventConsts.CFG.TOPIC, EventConsts.CFG.UPDATE));
 
         return cnt;
     }
@@ -124,6 +139,9 @@ public class CfgServiceImpl implements TickTimer, CfgService {
         int cnt = this.cfgDAO.deleteAll();
         CfgUtils.removeCache();
 
+        // 发送事件
+        this.sendMessage(new UniformEvent(EventConsts.CFG.TOPIC, EventConsts.CFG.REMOVE));
+
         return cnt;
     }
 
@@ -133,6 +151,9 @@ public class CfgServiceImpl implements TickTimer, CfgService {
     public int remove(String catg) {
         int cnt = this.cfgDAO.delete(catg);
         CfgUtils.removeCache(catg);
+
+        // 发送事件
+        this.sendMessage(new UniformEvent(EventConsts.CFG.TOPIC, EventConsts.CFG.REMOVE));
 
         return cnt;
     }
@@ -144,13 +165,27 @@ public class CfgServiceImpl implements TickTimer, CfgService {
         int cnt = this.cfgDAO.delete(catg, name);
         CfgUtils.removeCache(catg, name);
 
+        // 发送事件
+        this.sendMessage(new UniformEvent(EventConsts.CFG.TOPIC, EventConsts.CFG.REMOVE));
+
         return cnt;
+    }
+
+    /**
+     * 发送消息
+     */
+    private void sendMessage(UniformEvent event) {
+        this.eventBusExt.postUniformEvent(event);
     }
 
     // ~~~~~~~~~~~~ 依赖注入 ~~~~~~~~~~~~ //
 
     public void setCfgDAO(AbstractCfgDAO cfgDAO) {
         this.cfgDAO = cfgDAO;
+    }
+
+    public void setEventBusExt(EventBusExt eventBusExt) {
+        this.eventBusExt = eventBusExt;
     }
 
 }

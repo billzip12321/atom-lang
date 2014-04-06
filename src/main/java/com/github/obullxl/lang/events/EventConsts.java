@@ -17,16 +17,19 @@ public interface EventConsts {
      */
     public interface CFG {
         /** 主题 */
-        public String TOPIC = "TP_CFG";
-        
+        public String TOPIC   = "TP_CFG";
+
+        /** 事件-刷新 */
+        public String REFRESH = "EC_CFG_REFRESH";
+
         /** 事件-新增 */
-        public String CREATE = "EC_CFG_CREATE";
-        
+        public String CREATE  = "EC_CFG_CREATE";
+
         /** 事件-更新 */
-        public String UPDATE = "EC_CFG_UPDATE";
-        
+        public String UPDATE  = "EC_CFG_UPDATE";
+
         /** 事件-删除 */
-        public String REMOVE = "EC_CFG_REMOVE";
+        public String REMOVE  = "EC_CFG_REMOVE";
     }
-    
+
 }

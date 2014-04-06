@@ -31,6 +31,16 @@ public class MapExt extends ConcurrentHashMap<String, String> implements Cloneab
 
     /** K/V分隔符 */
     public static final String KV_SEP           = "=";
+    
+    /**
+     * 从Map对象转换为MapExt对象
+     */
+    public static final MapExt from(Map<String, String> map) {
+        MapExt ext = new MapExt();
+        ext.putAll(map);
+        
+        return ext;
+    }
 
     /**
      * 把字符串解析成扩展属性，K/V以‘空格’分隔，K与V间以‘=’分隔，自动去除格式不正确的字符串。

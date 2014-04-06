@@ -11,12 +11,9 @@ import javax.servlet.ServletException;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
-import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
-import org.apache.commons.io.IOUtils;
-import org.apache.commons.lang.BooleanUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.SystemUtils;
 import org.apache.commons.lang.math.NumberUtils;
@@ -35,10 +32,13 @@ import com.github.obullxl.lang.config.ConfigFactory;
 import com.github.obullxl.lang.spring.ServletReadyEvent;
 import com.github.obullxl.lang.spring.web.VelocityEngineFactory;
 import com.github.obullxl.lang.spring.web.WebViewThemeHolder;
-import com.github.obullxl.lang.utils.DateUtils;
+import com.github.obullxl.lang.user.UserContext;
+import com.github.obullxl.lang.user.UserContextHolder;
+import com.github.obullxl.lang.user.UserContextUtils;
 import com.github.obullxl.lang.utils.LogUtils;
-import com.github.obullxl.lang.utils.MD5Utils;
-import com.github.obullxl.lang.utils.TextUtils;
+import com.github.obullxl.lang.web.AbstractClientIpDetect;
+import com.github.obullxl.lang.web.AbstractUserRightDetect;
+import com.github.obullxl.lang.web.AbstractWebToolBox;
 import com.github.obullxl.lang.web.WebContext;
 import com.github.obullxl.lang.webx.WebX;
 import com.github.obullxl.lang.webx.WebXUtils;
@@ -50,35 +50,39 @@ import com.github.obullxl.lang.webx.WebXUtils;
  * @version $Id: DispatcherServletExt.java, V1.0.1 2013年11月25日 下午3:45:47 $
  */
 public class DispatcherServletExt extends DispatcherServlet {
-    private static final long     serialVersionUID                  = 3846370305975208566L;
+    private static final long       serialVersionUID                  = 3846370305975208566L;
 
     /** Logger */
-    private static final Logger   logger                            = LoggerFactory.getLogger("SERVLET");
+    private static final Logger     logger                            = LoggerFactory.getLogger("SERVLET");
 
     /** Velocity引擎工厂Bean名称 */
-    public static final String    VELOCITY_ENGINE_FACTORY_BEAN_NAME = "velocityEngineFactory";
+    public static final String      VELOCITY_ENGINE_FACTORY_BEAN_NAME = "velocityEngineFactory";
 
     /** URL路径工具类 */
-    private final UrlPathHelper   urlPathHelper                     = new UrlPathHelper();
+    private final UrlPathHelper     urlPathHelper                     = new UrlPathHelper();
 
     /** 性能时长 */
-    private long                  perfThreshold                     = 5000;
+    private long                    perfThreshold                     = 5000;
 
     /** Velocity引擎工厂 */
-    private VelocityEngine        velocityEngine;
-    private VelocityEngineFactory velocityEngineFactory;
+    private VelocityEngine          velocityEngine;
+    private VelocityEngineFactory   velocityEngineFactory;
+
+    /** 客户端IP防御器 */
+    private AbstractClientIpDetect  clientIpDetect;
+
+    /** 用户权限检查器 */
+    private AbstractUserRightDetect userRightDetect;
 
     /** 
      * @see javax.servlet.GenericServlet#init(javax.servlet.ServletConfig)
      */
     public void init(ServletConfig config) throws ServletException {
-        super.init(config);
-
         // 初始化上下文
         WebContext.init(config);
 
         // 系统参数
-        String value = ConfigFactory.get().getPropertyValue("perfThreshold");
+        String value = config.getInitParameter("perf.threshold");
         this.perfThreshold = NumberUtils.toLong(value, this.perfThreshold);
 
         // 上下文
@@ -90,24 +94,39 @@ public class DispatcherServletExt extends DispatcherServlet {
         logger.warn("[系统]-根目录-{}", rootPath);
 
         // 设置工具类
-        config.getServletContext().setAttribute(MD5Utils.class.getSimpleName(), new MD5Utils());
-        config.getServletContext().setAttribute(DateUtils.class.getSimpleName(), new DateUtils());
-        config.getServletContext().setAttribute(TextUtils.class.getSimpleName(), new TextUtils());
-
-        config.getServletContext().setAttribute(IOUtils.class.getSimpleName(), new IOUtils());
-        config.getServletContext().setAttribute(NumberUtils.class.getSimpleName(), new NumberUtils());
-        config.getServletContext().setAttribute(StringUtils.class.getSimpleName(), new StringUtils());
-        config.getServletContext().setAttribute(FileUtils.class.getSimpleName(), new FileUtils());
-        config.getServletContext().setAttribute(FilenameUtils.class.getSimpleName(), new FilenameUtils());
-        config.getServletContext().setAttribute(BooleanUtils.class.getSimpleName(), new BooleanUtils());
-
-        config.getServletContext().setAttribute(CollectionUtils.class.getSimpleName(), new CollectionUtils());
+        String toolBoxClz = config.getInitParameter("tool.box.clazz");
+        if (StringUtils.isNotBlank(toolBoxClz)) {
+            // 加载指定工具
+            try {
+                Class<?> toolBoxCls = Class.forName(toolBoxClz);
+                AbstractWebToolBox toolBox = (AbstractWebToolBox) toolBoxCls.newInstance();
+                Map<String, Object> tools = toolBox.findToolBox();
+                if (tools != null) {
+                    for (Map.Entry<String, Object> entry : tools.entrySet()) {
+                        config.getServletContext().setAttribute(entry.getKey(), entry.getValue());
+                    }
+                }
+            } catch (Exception e) {
+                logger.warn("[工具箱]-类[]加载异常！", toolBoxClz, e);
+            }
+        } else {
+            // 加载默认工具
+            Map<String, Object> tools = AbstractWebToolBox.findBasicTools();
+            if (tools != null) {
+                for (Map.Entry<String, Object> entry : tools.entrySet()) {
+                    config.getServletContext().setAttribute(entry.getKey(), entry.getValue());
+                }
+            }
+        }
 
         // 系统参数
         Map<String, String> cfgs = ConfigFactory.get().getConfig();
         for (Map.Entry<String, String> cfg : cfgs.entrySet()) {
             config.getServletContext().setAttribute(cfg.getKey(), cfg.getValue());
         }
+
+        // 启动容器
+        super.init(config);
 
         // 容器启动事件
         this.getWebApplicationContext().publishEvent(new ServletReadyEvent(Boolean.TRUE));
@@ -118,27 +137,61 @@ public class DispatcherServletExt extends DispatcherServlet {
      */
     protected void onRefresh(ApplicationContext context) {
         super.onRefresh(context);
+        ServletConfig config = WebContext.getServletConfig();
 
         // 获取Velocity引擎
         this.velocityEngineFactory = context.getBean(VELOCITY_ENGINE_FACTORY_BEAN_NAME, VelocityEngineFactory.class);
         this.velocityEngine = this.velocityEngineFactory.get();
+
+        // 获取IP防御器
+        this.clientIpDetect = context.getBean(AbstractClientIpDetect.IP_DETECT_BEAN, AbstractClientIpDetect.class);
+
+        // 获取用户权限检查器
+        this.userRightDetect = context.getBean(AbstractUserRightDetect.RIGHT_DETECT_BEAN, AbstractUserRightDetect.class);
+
+        // 工具箱
+        AbstractWebToolBox toolBox = context.getBean(AbstractWebToolBox.TOOL_BOX_BEAN, AbstractWebToolBox.class);
+        if (toolBox != null) {
+            Map<String, Object> tools = toolBox.findToolBox();
+            if (tools != null) {
+                for (Map.Entry<String, Object> entry : tools.entrySet()) {
+                    config.getServletContext().setAttribute(entry.getKey(), entry.getValue());
+                }
+            }
+        }
     }
 
     /** 
      * @see org.springframework.web.servlet.DispatcherServlet#doDispatch(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
      */
     public void doDispatch(HttpServletRequest request, HttpServletResponse response) throws Exception {
-        LogUtils.updateLogID();
+        // IP防御
+        if (this.clientIpDetect != null) {
+            if (!this.clientIpDetect.onRequest(request, response)) {
+                return;
+            }
+        }
 
         // 计时
         Profiler.start("Web请求[" + request.getMethod() + "], URL[" + this.getQueryURL(request) + "].");
-
-        // 打印请求参数
-        this.dumpRequestParams(request);
-
         try {
+            LogUtils.updateLogID();
+
+            // 打印请求参数
+            this.dumpRequestParams(request);
+
             // 设置上下文
             WebContext.set(new WebContext(request, response));
+
+            // 设置用户上下文
+            this.updateUserContext(request);
+
+            // 检查用户权限
+            if (this.userRightDetect != null) {
+                if (!this.userRightDetect.onRequest(request, response)) {
+                    return;
+                }
+            }
 
             // 设置请求参数
             this.fetchRequestParams(request);
@@ -148,6 +201,9 @@ public class DispatcherServletExt extends DispatcherServlet {
         } finally {
             // 清理上下文
             WebContext.remove();
+
+            // 清理用户上下文
+            UserContextHolder.remove();
 
             // 清理计时
             Profiler.release();
@@ -231,6 +287,19 @@ public class DispatcherServletExt extends DispatcherServlet {
     }
 
     /**
+     * 设置用户上下文
+     */
+    private void updateUserContext(HttpServletRequest request) {
+        HttpSession session = request.getSession(true);
+        UserContext ctx = UserContextUtils.findSessionContext(session);
+        if (ctx != null) {
+            UserContextHolder.set(ctx);
+        } else {
+            UserContextHolder.set(UserContext.newMockContext());
+        }
+    }
+
+    /**
      * 打印性能分析日志 
      */
     private void dumpPerformance() {
@@ -273,7 +342,13 @@ public class DispatcherServletExt extends DispatcherServlet {
         for (Map.Entry<Object, Object> entry : params.entrySet()) {
             Object value = entry.getValue();
             if (value != null) {
-                data.put(StringUtils.trimToEmpty(String.valueOf(entry.getKey())), entry.getValue());
+                String key = StringUtils.trimToEmpty(String.valueOf(entry.getKey()));
+                String[] vs = (String[]) value;
+                if (vs != null && vs.length == 1) {
+                    data.put(key, vs[0]);
+                } else {
+                    data.put(key, value);
+                }
             }
         }
     }

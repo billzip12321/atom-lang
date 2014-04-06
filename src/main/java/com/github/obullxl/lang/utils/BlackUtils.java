@@ -43,6 +43,21 @@ public class BlackUtils {
         InputStream input = null;
         try {
             input = new FileInputStream(path);
+            initBlacks(input);
+        } catch (Exception e) {
+            throw new RuntimeException("[黑名单]-初始化黑名单异常!");
+        } finally {
+            IOUtils.closeQuietly(input);
+            logger.warn("[黑名单]-初始化完成-{}, 共加载黑名单[{}]个.", path, count);
+        }
+    }
+
+    /**
+     * 根据文件流初始化黑名单
+     */
+    public static final void initBlacks(InputStream input) {
+        int count = 0;
+        try {
             List<String> lines = IOUtils.readLines(input);
             for (String line : lines) {
                 line = StringUtils.trim(line);
@@ -59,11 +74,10 @@ public class BlackUtils {
         } catch (Exception e) {
             throw new RuntimeException("[黑名单]-初始化黑名单异常!");
         } finally {
-            IOUtils.closeQuietly(input);
-            logger.warn("[黑名单]-初始化完成-{}, 共加载黑名单[{}]个.", path, count);
+            logger.warn("[黑名单]-初始化完成, 共加载黑名单[{}]个.", count);
         }
     }
-    
+
     /**
      * 直接加载初始化黑名单
      */
@@ -75,12 +89,12 @@ public class BlackUtils {
      * 检测是否为黑名单
      */
     public static boolean isBlackWord(String word) {
-        for(String black : blacks) {
-            if(StringUtils.contains(word, black)) {
+        for (String black : blacks) {
+            if (StringUtils.containsIgnoreCase(word, black)) {
                 return true;
             }
         }
-        
+
         return false;
     }
 

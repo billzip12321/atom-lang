@@ -7,7 +7,7 @@ package com.github.obullxl.lang.events;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-import org.springframework.context.ApplicationEvent;
+import com.github.obullxl.lang.ToString;
 
 /**
  * 统一事件对象
@@ -15,7 +15,7 @@ import org.springframework.context.ApplicationEvent;
  * @author obullxl@gmail.com
  * @version $Id: UniformEvent.java, V1.0.1 2014年2月18日 下午12:05:17 $
  */
-public class UniformEvent extends ApplicationEvent {
+public class UniformEvent extends ToString {
     private static final long   serialVersionUID = 531803174045100863L;
 
     /** 主题 */
@@ -24,24 +24,36 @@ public class UniformEvent extends ApplicationEvent {
     /** 事件码 */
     private String              evtCode;
 
+    /** 消息内容 */
+    private Object              payload;
+
     /** 扩展参数 */
     private Map<String, String> extMap;
 
     /**
      * CTOR
      */
+    public UniformEvent() {
+    }
+
     public UniformEvent(Object source) {
-        super(source);
+        this.payload = source;
+    }
+
+    public UniformEvent(String topic, String evtCode) {
+        this(Boolean.TRUE);
+        this.topic = topic;
+        this.evtCode = evtCode;
     }
 
     public UniformEvent(Object source, String topic, String evtCode) {
-        super(source);
+        this(source);
         this.topic = topic;
         this.evtCode = evtCode;
     }
 
     public UniformEvent(Object source, String topic, String evtCode, Map<String, String> extMap) {
-        super(source);
+        this(source);
         this.topic = topic;
         this.evtCode = evtCode;
         this.extMap = extMap;
@@ -50,8 +62,8 @@ public class UniformEvent extends ApplicationEvent {
     /**
      * 获取消息数据对象
      */
-    public Object findPayLoad() {
-        return super.getSource();
+    public Object findPayload() {
+        return this.payload;
     }
 
     /**
@@ -59,7 +71,7 @@ public class UniformEvent extends ApplicationEvent {
      */
     @SuppressWarnings("unchecked")
     public <T> T castPayLoad() {
-        return (T) this.findPayLoad();
+        return (T) this.findPayload();
     }
 
     // ~~~~~~~~~~~~~~~~ Getters and Setters ~~~~~~~~~~~~~~~~~ //
