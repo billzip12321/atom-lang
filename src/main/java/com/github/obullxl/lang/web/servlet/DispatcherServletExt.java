@@ -259,7 +259,7 @@ public class DispatcherServletExt extends DispatcherServlet {
             mv.getModelMap().putAll(WebContext.get().getData());
 
             // 主题
-            mv.getModelMap().put(WebViewThemeHolder.THEME_KEY, WebViewThemeHolder.get());
+            // mv.getModelMap().put(WebViewThemeHolder.THEME_KEY, WebViewThemeHolder.get());
 
             // 增加WebX工具类
             Map<String, WebX> xtools = WebXUtils.findAllWebX();

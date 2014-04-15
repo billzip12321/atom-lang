@@ -4,8 +4,11 @@
  */
 package com.github.obullxl.lang.utils;
 
-import org.springframework.util.ClassUtils;
 import groovy.lang.GroovyClassLoader;
+
+import java.io.File;
+
+import org.springframework.util.ClassUtils;
 
 /**
  * Groovy工具类
@@ -16,19 +19,42 @@ import groovy.lang.GroovyClassLoader;
 public class GroovyUtils {
 
     /**
-     * 加载Groovy文件对象
+     * 加载Groovy脚本内容
      */
-    public static Class<?> load(String groovyPath) {
-        return load(groovyPath, ClassUtils.getDefaultClassLoader());
+    public static Class<?> load(String content) {
+        return load(content, ClassUtils.getDefaultClassLoader());
     }
 
     /**
-     * 加载Groovy文件对象
+     * 加载Groovy脚本内容
      */
-    public static Class<?> load(String groovyPath, ClassLoader loader) {
+    public static Class<?> load(String content, ClassLoader loader) {
         GroovyClassLoader groovyClassLoader = new GroovyClassLoader(loader);
         try {
-            return groovyClassLoader.parseClass(groovyPath);
+            return groovyClassLoader.parseClass(content);
+        } finally {
+            try {
+                groovyClassLoader.close();
+            } catch (Exception e) {
+                // ignore
+            }
+        }
+    }
+
+    /**
+     * 加载Groovy文件内容
+     */
+    public static Class<?> load(File file) throws Exception {
+        return load(file, ClassUtils.getDefaultClassLoader());
+    }
+
+    /**
+     * 加载Groovy脚本内容
+     */
+    public static Class<?> load(File file, ClassLoader loader) throws Exception {
+        GroovyClassLoader groovyClassLoader = new GroovyClassLoader(loader);
+        try {
+            return groovyClassLoader.parseClass(file);
         } finally {
             try {
                 groovyClassLoader.close();

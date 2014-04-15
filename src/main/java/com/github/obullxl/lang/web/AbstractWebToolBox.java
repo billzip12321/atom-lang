@@ -11,6 +11,7 @@ import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.BooleanUtils;
+import org.apache.commons.lang.ObjectUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.math.NumberUtils;
 
@@ -45,6 +46,7 @@ public abstract class AbstractWebToolBox {
         tools.put(FileUtils.class.getSimpleName(), new FileUtils());
         tools.put(FilenameUtils.class.getSimpleName(), new FilenameUtils());
         tools.put(BooleanUtils.class.getSimpleName(), new BooleanUtils());
+        tools.put(ObjectUtils.class.getSimpleName(), new ObjectUtils());
 
         tools.put(CollectionUtils.class.getSimpleName(), new CollectionUtils());
 
