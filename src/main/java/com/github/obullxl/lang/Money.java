@@ -5,9 +5,7 @@
 package com.github.obullxl.lang;
 
 import java.io.Serializable;
-
 import java.math.BigDecimal;
-
 import java.util.Currency;
 
 /**
@@ -813,6 +811,29 @@ public class Money implements Serializable, Comparable<Money> {
      */
     public String toString() {
         return getAmount().toString();
+    }
+
+    // 镜头工具方法 ===============================================
+
+    /**
+     * 分值转换为Money类型
+     */
+    public static final Money fromCent(long cent) {
+        Money money = new Money();
+        money.setCent(cent);
+
+        return money;
+    }
+
+    /**
+     * 分值转换为Money类型
+     */
+    public static final long toCent(Money money) {
+        if (money == null) {
+            return 0L;
+        }
+
+        return money.getCent();
     }
 
     // 内部方法 ===================================================

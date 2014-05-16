@@ -7,6 +7,8 @@ package com.github.obullxl.lang.enums;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
+import org.apache.commons.lang.StringUtils;
+
 /**
  * 枚举接口工具类
  * 
@@ -43,6 +45,17 @@ public class EnumBaseUtils {
         }
 
         return map;
+    }
+
+    /**
+     * 获取枚举代码
+     */
+    public static final String findCode(EnumBase enm) {
+        if (enm != null) {
+            return enm.code();
+        }
+
+        return StringUtils.EMPTY;
     }
 
 }
