@@ -416,6 +416,16 @@ public class Money implements Serializable, Comparable<Money> {
     }
 
     // 货币算术 ==========================================
+    
+    /**
+     * 去除分值
+     * 
+     * @return 本对象。
+     */
+    public Money trimCent() {
+        this.setAmount(new BigDecimal(this.getAmount().longValue()));
+        return this;
+    }
 
     /**
      * 货币加法。
@@ -834,6 +844,19 @@ public class Money implements Serializable, Comparable<Money> {
         }
 
         return money.getCent();
+    }
+    
+    /**
+     * 检查金额是否整数
+     */
+    public static final boolean isNoCent(Money money) {
+        if (money == null) {
+            return false;
+        }
+
+        long cent = money.getAmount().longValue() * money.getCentFactor();
+
+        return (cent == money.getCent());
     }
 
     // 内部方法 ===================================================
