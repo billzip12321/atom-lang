@@ -32,7 +32,7 @@ public class CfgServiceImpl implements TickTimer, CfgService {
     private static final Logger logger   = LogUtils.get();
 
     /** 最近执行时间 */
-    private static Date         EXEC_TIME;
+    private Date                execTime;
 
     /** 执行时间间隔(11分钟) */
     private static final long   INTERVAL = 11 * 60 * 1000;
@@ -58,28 +58,29 @@ public class CfgServiceImpl implements TickTimer, CfgService {
      */
     public void tick() {
         if (!this.isMustExecute()) {
-            if (logger.isInfoEnabled()) {
-                logger.info("[参数模型]-本次无需操作, [" + DateUtils.toStringDL(EXEC_TIME) + "].");
-            }
-
             return;
         }
 
-        // 定时刷新
-        this.onRefresh();
+        long start = System.currentTimeMillis();
+        try {
+            // 定时刷新
+            this.onRefresh();
+        } finally {
+            logger.warn("[参数模型]-参数模型缓存刷新完成, 耗时[{}]ms.", (System.currentTimeMillis() - start));
+        }
     }
 
     /**
      * 是否进行缓存刷新
      */
     private boolean isMustExecute() {
-        if (EXEC_TIME == null) {
-            EXEC_TIME = DateUtils.toDateDW("1988-08-08");
+        if (this.execTime == null) {
+            this.execTime = DateUtils.toDateDW("1988-08-08");
         }
 
         Date now = new Date();
-        if (now.getTime() - EXEC_TIME.getTime() >= INTERVAL) {
-            EXEC_TIME = now;
+        if (now.getTime() - this.execTime.getTime() >= INTERVAL) {
+            this.execTime.setTime(now.getTime());
             return true;
         }
 
@@ -90,22 +91,15 @@ public class CfgServiceImpl implements TickTimer, CfgService {
      * @see com.github.obullxl.lang.cfg.CfgService#onRefresh()
      */
     public void onRefresh() {
-        logger.warn("[参数模型]-开始刷新参数模型缓存......");
-
-        long start = System.currentTimeMillis();
-        try {
-            List<CfgModel> cfgs = this.cfgDAO.selectAll();
-            if (cfgs != null) {
-                for (CfgModel cfg : cfgs) {
-                    CfgUtils.updateCache(cfg);
-                }
+        List<CfgModel> cfgs = this.cfgDAO.selectAll();
+        if (cfgs != null) {
+            for (CfgModel cfg : cfgs) {
+                CfgUtils.updateCache(cfg);
             }
-
-            // 发送事件
-            this.sendMessage(new UniformEvent(cfgs, EventConsts.CFG.TOPIC, EventConsts.CFG.REFRESH));
-        } finally {
-            logger.warn("[参数模型]-参数模型缓存刷新完成, 耗时[{}]ms, 参数列表: \n{}", (System.currentTimeMillis() - start), CfgUtils.find());
         }
+
+        // 发送事件
+        this.sendMessage(new UniformEvent(cfgs, EventConsts.CFG.TOPIC, EventConsts.CFG.REFRESH));
     }
 
     /** 
