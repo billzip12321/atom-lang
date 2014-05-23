@@ -63,6 +63,8 @@ public class CfgServiceImpl implements TickTimer, CfgService {
 
         long start = System.currentTimeMillis();
         try {
+            logger.warn("[参数模型]-开始刷新参数模型缓存.");
+            
             // 定时刷新
             this.onRefresh();
         } finally {

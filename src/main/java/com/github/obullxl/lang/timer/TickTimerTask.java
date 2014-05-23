@@ -46,13 +46,10 @@ public class TickTimerTask implements ApplicationContextAware {
      */
     public void doTask() {
         for (TickTimer timer : this.timers) {
-            if (logger.isInfoEnabled()) {
-                logger.info("[定时器]-[{}]开始执行....", timer.getClass().getName());
-            }
             try {
                 timer.tick();
             } catch (Exception e) {
-                logger.warn("[定时器]-执行异常[" + timer.getClass().getName() + "].", e);
+                logger.warn("[定时器]-执行异常[{}].", timer.getClass().getName(), e);
             }
         }
     }
