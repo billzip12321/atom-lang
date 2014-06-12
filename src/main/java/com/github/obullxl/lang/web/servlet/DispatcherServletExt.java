@@ -29,6 +29,7 @@ import org.springframework.web.util.UrlPathHelper;
 import com.github.obullxl.lang.Profiler;
 import com.github.obullxl.lang.ToString;
 import com.github.obullxl.lang.config.ConfigFactory;
+import com.github.obullxl.lang.sitex.SiteX;
 import com.github.obullxl.lang.spring.ServletReadyEvent;
 import com.github.obullxl.lang.spring.web.VelocityEngineFactory;
 import com.github.obullxl.lang.spring.web.WebViewThemeHolder;
@@ -142,6 +143,12 @@ public class DispatcherServletExt extends DispatcherServlet {
         // 获取Velocity引擎
         this.velocityEngineFactory = context.getBean(VELOCITY_ENGINE_FACTORY_BEAN_NAME, VelocityEngineFactory.class);
         this.velocityEngine = this.velocityEngineFactory.get();
+        
+        // 获取X站点
+        SiteX siteX = context.getBean(SiteX.SITE_X_BEAN, SiteX.class);
+        if(siteX != null) {
+            config.getServletContext().setAttribute(SiteX.class.getSimpleName(), siteX);
+        }
 
         // 获取IP防御器
         this.clientIpDetect = context.getBean(AbstractClientIpDetect.IP_DETECT_BEAN, AbstractClientIpDetect.class);

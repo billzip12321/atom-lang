@@ -4,7 +4,7 @@
 	<groupId>com.github.obullxl</groupId>
 	<artifactId>atom-lang</artifactId>
 	<packaging>jar</packaging>
-	<version>3.1</version>
+	<version>3.4</version>
 	<name>atom-lang</name>
 	<description>atom-lang</description>
 	<licenses>
@@ -43,6 +43,16 @@
 			<groupId>ch.qos.logback</groupId>
 			<artifactId>logback-classic</artifactId>
 			<version>1.0.13</version>
+			<scope>provided</scope>
+		</dependency>
+
+		<!-- ======================================== -->
+		<!-- RSA算法 -->
+		<!-- ======================================== -->
+		<dependency>
+			<groupId>bouncycastle</groupId>
+			<artifactId>bcprov-jdk15</artifactId>
+			<version>140</version>
 			<scope>provided</scope>
 		</dependency>
 

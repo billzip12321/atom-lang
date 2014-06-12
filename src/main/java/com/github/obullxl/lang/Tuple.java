@@ -25,9 +25,25 @@ public class Tuple<V1, V2> extends ToString {
     public Tuple() {
     }
 
+    public Tuple(V1 one) {
+        this.one = one;
+        this.two = null;
+    }
+
     public Tuple(V1 one, V2 two) {
         this.one = one;
         this.two = two;
+    }
+
+    /**
+     * 构造元组对象
+     */
+    public static <V1, V2> Tuple<V1, V2> with(final V1 value1) {
+        return new Tuple<V1, V2>(value1, null);
+    }
+
+    public static <V1, V2> Tuple<V1, V2> with(final V1 value1, final V2 value2) {
+        return new Tuple<V1, V2>(value1, value2);
     }
 
     // ~~~~~~~~~ getters and setters ~~~~~~~~~ //
