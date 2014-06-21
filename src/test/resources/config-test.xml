@@ -2,12 +2,14 @@
 <!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd">
 <properties>
 	<comment>系统参数配置</comment>
-	
+
 	<!-- ================================ -->
 	<!-- 应用名称 -->
 	<!-- ================================ -->
 	<entry key="app_name">$ANTX_HOME</entry>
-	
+
 	<entry key="show_ads">false</entry>
 
+	<!-- 其他参数配置 -->
+	<entry key="custom-config-path">c:/param-config.xml</entry>
 </properties>

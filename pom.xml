@@ -47,6 +47,33 @@
 		</dependency>
 
 		<!-- ======================================== -->
+		<!-- 阿里云 -->
+		<!-- ======================================== -->
+		<dependency>
+			<groupId>com.aliyun.openservices</groupId>
+			<artifactId>aliyun-openservices</artifactId>
+			<version>1.2.2</version>
+			<scope>provided</scope>
+		</dependency>
+
+		<!-- ======================================== -->
+		<!-- 京东云 -->
+		<!-- ======================================== -->
+		<dependency>
+			<groupId>com.jcloud</groupId>
+			<artifactId>jss</artifactId>
+			<version>1.1.4</version>
+			<scope>provided</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>org.apache.httpcomponents</groupId>
+			<artifactId>httpclient</artifactId>
+			<version>4.3.4</version>
+			<scope>provided</scope>
+		</dependency>
+
+		<!-- ======================================== -->
 		<!-- RSA算法 -->
 		<!-- ======================================== -->
 		<dependency>
@@ -254,16 +281,23 @@
 
 	<repositories>
 		<repository>
-			<id>maven.org</id>
-			<url>http://central.maven.org/maven2</url>
-		</repository>
-		<repository>
-			<id>alibabatech.com</id>
-			<url>http://code.alibabatech.com/mvn/releases</url>
+			<id>ext-libs</id>
+			<releases>
+				<enabled>true</enabled>
+				<checksumPolicy>ignore</checksumPolicy>
+			</releases>
+			<snapshots>
+				<enabled>false</enabled>
+			</snapshots>
+			<url>file://${project.basedir}/libs</url>
 		</repository>
 		<repository>
 			<id>obullxl.github</id>
 			<url>http://obullxl.github.io/mvnrepo</url>
+		</repository>
+		<repository>
+			<id>maven.org</id>
+			<url>http://central.maven.org/maven2</url>
 		</repository>
 	</repositories>
 

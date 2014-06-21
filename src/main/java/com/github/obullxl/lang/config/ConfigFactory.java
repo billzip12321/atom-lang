@@ -4,6 +4,9 @@
  */
 package com.github.obullxl.lang.config;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.InputStream;
 import java.net.InetAddress;
 import java.net.NetworkInterface;
 import java.net.URL;
@@ -16,6 +19,7 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
 
+import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
 
 /**
@@ -78,32 +82,31 @@ public class ConfigFactory {
 
         ClassLoader clsloader = Thread.currentThread().getContextClassLoader();
         URL url = clsloader.getResource(path);
-
-        Properties properties = new Properties();
         try {
             if (StringUtils.endsWithIgnoreCase(path, ".xml")) {
-                properties.loadFromXML(url.openStream());
+                loadFromStream("xml", url.openStream());
             } else {
-                properties.load(url.openStream());
+                loadFromStream("props", url.openStream());
             }
         } catch (Exception e) {
             throw new RuntimeException("无法加载配置文件-" + path);
         }
 
-        for (Map.Entry<Object, Object> entry : properties.entrySet()) {
-            String key = StringUtils.trimToEmpty(entry.getKey().toString());
-            String value = StringUtils.trimToEmpty(entry.getValue().toString());
-
-            // 从系统参数中取值，如果系统参数中有值，系统参数的值生效
-            String sysValue = System.getProperty(key);
-            if (StringUtils.isNotEmpty(sysValue)) {
-                System.out.println("在Java -D参数中发现key[" + key + "]，将使用系统参数设置的值[" + sysValue + "] 替换原有的值 [" + value + "]");
-                value = sysValue;
+        // 个性化参数
+        path = StringUtils.trimToEmpty(config.getCustomConfigPath());
+        File file = new File(path);
+        if (file.exists() && file.isFile()) {
+            try {
+                if (StringUtils.endsWithIgnoreCase(path, ".xml")) {
+                    loadFromStream("xml", new FileInputStream(file));
+                } else {
+                    loadFromStream("props", new FileInputStream(file));
+                }
+            } catch (Exception e) {
+                System.err.print("加载个性化配置参数异常, 参数路径: " + path);
+                e.printStackTrace();
             }
-
-            config.setProperty(key, value);
         }
-
     }
 
     /**
@@ -124,6 +127,38 @@ public class ConfigFactory {
         String sysAppName = config.getPropertyValue(Configration.SYS_APP_NAME);
         if (sysAppName == null || sysAppName.length() == 0) {
             throw new RuntimeException("必须设置app_name属性");
+        }
+    }
+
+    /**
+     * 根据输入流获取参数配置
+     */
+    private static final void loadFromStream(String xml, InputStream input) {
+        Properties properties = new Properties();
+        try {
+            if (StringUtils.equalsIgnoreCase(xml, "xml")) {
+                properties.loadFromXML(input);
+            } else {
+                properties.load(input);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            IOUtils.closeQuietly(input);
+        }
+
+        for (Map.Entry<Object, Object> entry : properties.entrySet()) {
+            String key = StringUtils.trimToEmpty(entry.getKey().toString());
+            String value = StringUtils.trimToEmpty(entry.getValue().toString());
+
+            // 从系统参数中取值，如果系统参数中有值，系统参数的值生效
+            String sysValue = System.getProperty(key);
+            if (StringUtils.isNotEmpty(sysValue)) {
+                System.out.println("在Java -D参数中发现key[" + key + "]，将使用系统参数设置的值[" + sysValue + "] 替换原有的值 [" + value + "]");
+                value = sysValue;
+            }
+
+            config.setProperty(key, value);
         }
     }
 
@@ -194,7 +229,7 @@ public class ConfigFactory {
 
         System.out.println("ip :" + ip);
         System.out.println("hostname :" + hostName);
-        
+
         System.out.println();
         get();
     }

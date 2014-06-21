@@ -16,27 +16,28 @@ import java.util.Map;
  */
 public class Configration {
     /** 系统唯一标识符 */
-    public static final String  SYS_IDENTIFY  = "identify";
+    public static final String  SYS_IDENTIFY       = "identify";
 
     /** 本地主机名称 */
-    public static final String  SYS_HOST_NAME = "sys_host_name";
+    public static final String  SYS_HOST_NAME      = "sys_host_name";
     /** 本机ip */
-    public static final String  SYS_IP        = "sys_ip";
+    public static final String  SYS_IP             = "sys_ip";
     /** 应用名称 */
-    public static final String  SYS_APP_NAME  = "app_name";
+    public static final String  SYS_APP_NAME       = "app_name";
     /** 运行模式 */
-    public static final String  SYS_RUN_MODE  = "run_mode";
+    public static final String  SYS_RUN_MODE       = "run_mode";
 
-    public static final String  SYS_VERSION   = "sys_version";
+    public static final String  SYS_VERSION        = "sys_version";
 
-    public static final String  LOG_CONFIG    = "log_config";
+    public static final String  LOG_CONFIG         = "log_config";
 
     /** key 常量 */
-    public static final String  LOG4J_PATH    = "log4j_path";
+    public static final String  LOG4J_PATH         = "log4j_path";
+    public static final String  CUSTOM_CONFIG_PATH = "custom-config-path";
 
     // ~~~~ 内部变量
 
-    private Map<String, String> configs       = new LinkedHashMap<String, String>();
+    private Map<String, String> configs            = new LinkedHashMap<String, String>();
 
     // ~~~~  构造函数
 
@@ -96,6 +97,10 @@ public class Configration {
 
     public String getLogConfig() {
         return getPropertyValue(LOG_CONFIG);
+    }
+    
+    public String getCustomConfigPath() {
+        return getPropertyValue(CUSTOM_CONFIG_PATH);
     }
 
 }
