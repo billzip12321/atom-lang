@@ -15,8 +15,7 @@ import com.github.obullxl.lang.Paginator;
  * @author obullxl@gmail.com
  * @version $Id: BizPageList.java, V1.0.1 2013年12月6日 上午9:00:52 $
  */
-@Deprecated
-public abstract class BizPageList<T> extends BizResponse {
+public class PageList<T> extends BizResponse {
     private static final long serialVersionUID = 1876568188422192453L;
 
     /** 分页信息 */
@@ -28,7 +27,13 @@ public abstract class BizPageList<T> extends BizResponse {
     /**
      * CTOR
      */
-    public BizPageList(Paginator pager, List<T> items) {
+    public PageList() {
+    }
+    
+    /**
+     * CTOR
+     */
+    public PageList(Paginator pager, List<T> items) {
         this.pager = pager;
         this.items = items;
     }
