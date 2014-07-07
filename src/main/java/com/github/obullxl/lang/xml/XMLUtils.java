@@ -73,7 +73,10 @@ public final class XMLUtils {
         }
 
         for (XMLNode xnode : xroot.getChildren()) {
-            return findByName(xnode, xname);
+            XMLNode node = findByName(xnode, xname);
+            if (node != null) {
+                return node;
+            }
         }
 
         return null;
