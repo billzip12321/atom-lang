@@ -9,6 +9,7 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 import com.github.obullxl.lang.ToString;
+import com.github.obullxl.lang.enums.EnumBase;
 
 /**
  * 请求返回结果
@@ -19,8 +20,11 @@ import com.github.obullxl.lang.ToString;
 public class BizResponse extends ToString implements Serializable {
     private static final long   serialVersionUID = 8526248715699921117L;
 
-    /** 业务数据KEY常量 */
+    /** 业务标志KEY常量 */
     public static final String  BIZ_ID_KEY       = "biz_id";
+
+    /** 业务数据KEY常量 */
+    public static final String  BIZ_DATA_KEY     = "biz_data";
 
     /** 业务流水 */
     private String              bizLog;
@@ -42,6 +46,39 @@ public class BizResponse extends ToString implements Serializable {
      */
     public BizResponse() {
     }
+
+    /**
+     * 设置业务数据
+     */
+    public Map<String, String> newBizData(String key, String value) {
+        this.bizData.put(key, value);
+        return this.bizData;
+    }
+
+    /**
+     * 构建返回结果
+     */
+    public void from(EnumBase enm) {
+        this.from(enm.code(), enm.desp());
+    }
+
+    /**
+     * 构建返回结果
+     */
+    public void from(String desp) {
+        this.from("PARAM", desp);
+    }
+
+    /**
+     * 构建返回结果
+     */
+    public void from(String code, String desp) {
+        this.setSuccess(false);
+        this.setRespCode(code);
+        this.setRespDesp(desp);
+    }
+
+    // ~~~~~~~~~~~~~ getters and setters ~~~~~~~~~~~~~ //
 
     public String getBizLog() {
         return bizLog;

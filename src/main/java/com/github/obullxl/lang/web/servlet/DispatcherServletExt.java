@@ -143,27 +143,40 @@ public class DispatcherServletExt extends DispatcherServlet {
         // 获取Velocity引擎
         this.velocityEngineFactory = context.getBean(VELOCITY_ENGINE_FACTORY_BEAN_NAME, VelocityEngineFactory.class);
         this.velocityEngine = this.velocityEngineFactory.get();
-        
+
         // 获取X站点
         SiteX siteX = context.getBean(SiteX.SITE_X_BEAN, SiteX.class);
-        if(siteX != null) {
+        if (siteX != null) {
             config.getServletContext().setAttribute(SiteX.class.getSimpleName(), siteX);
         }
 
         // 获取IP防御器
-        this.clientIpDetect = context.getBean(AbstractClientIpDetect.IP_DETECT_BEAN, AbstractClientIpDetect.class);
+        String name = AbstractClientIpDetect.IP_DETECT_BEAN;
+        if (context.containsBean(name)) {
+            this.clientIpDetect = context.getBean(name, AbstractClientIpDetect.class);
+        } else {
+            logger.warn("[框架]-系统未设置IP防御器({}).", name);
+        }
 
         // 获取用户权限检查器
-        this.userRightDetect = context.getBean(AbstractUserRightDetect.RIGHT_DETECT_BEAN, AbstractUserRightDetect.class);
+        name = AbstractUserRightDetect.RIGHT_DETECT_BEAN;
+        if (context.containsBean(name)) {
+            this.userRightDetect = context.getBean(name, AbstractUserRightDetect.class);
+        } else {
+            logger.warn("[框架]-系统未设置访问权限控制({}).", name);
+        }
 
         // 工具箱
-        AbstractWebToolBox toolBox = context.getBean(AbstractWebToolBox.TOOL_BOX_BEAN, AbstractWebToolBox.class);
-        if (toolBox != null) {
-            Map<String, Object> tools = toolBox.findToolBox();
-            if (tools != null) {
-                for (Map.Entry<String, Object> entry : tools.entrySet()) {
-                    config.getServletContext().setAttribute(entry.getKey(), entry.getValue());
-                }
+        name = AbstractWebToolBox.TOOL_BOX_BEAN;
+        Map<String, Object> tools = AbstractWebToolBox.findBasicTools();
+        if (context.containsBean(name)) {
+            AbstractWebToolBox toolBox = context.getBean(name, AbstractWebToolBox.class);
+            tools = toolBox.findToolBox();
+        }
+
+        if (tools != null && !tools.isEmpty()) {
+            for (Map.Entry<String, Object> entry : tools.entrySet()) {
+                config.getServletContext().setAttribute(entry.getKey(), entry.getValue());
             }
         }
     }
